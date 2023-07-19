@@ -5,7 +5,7 @@ SHELL=/bin/sh
 all:	mmciflexmodule.so mmcif_test
 
 mmciflexmodule.so: lex.yy.c mmciflexmodule.c
-	python3 setup.py build
+	python3 -m build --wheel
 
 lex.yy.c: mmcif.lex
 	$(LEX) mmcif.lex
