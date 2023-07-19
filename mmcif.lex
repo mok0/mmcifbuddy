@@ -5,7 +5,7 @@
 %{
 #include <string.h>
 
-char *shoveleft ();
+  char *shoveleft (char *str);
 %}
 
 %option noyywrap
@@ -79,21 +79,20 @@ char *mmcif_get_string(void)
    Shove a string to the left.
    mok 2021-08-23.
 */
-char *shoveleft (str)
-     char *str;
+char *shoveleft (char *str)
 {
-    register char *t, *s;
+  register char *t, *s;
 
-    s = str;
-    if (*s < 33) {
-        t = s;
-        while (*t) {
-	       *t = *(t+1);
-	       t++;
-        }
+  s = str;
+  if (*s < 33) {
+    t = s;
+    while (*t) {
+      *t = *(t+1);
+      t++;
     }
-    else {
-        s++;
-    }
-    return str;
+  }
+  else {
+    s++;
+  }
+  return str;
 }
