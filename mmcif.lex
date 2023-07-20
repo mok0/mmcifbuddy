@@ -1,12 +1,13 @@
-/*
-  $Id: mmcif.lex,v 1.2 2000/08/17 23:14:20 mok Exp $
-*/
+/* -*- mode: bison -*- */
 
 %{
 #include <string.h>
-
-  char *shoveleft (char *str);
+#include "mmciflexer.h"
+char *shoveleft (char *str);
 %}
+
+%option never-interactive
+%option prefix="mmcif"
 
 %option noyywrap
 %option nounput
@@ -24,44 +25,43 @@ semicolon_value		^;(.*\n[^;])*.*\n;
 
 {comment}					/* ignore */
 
-{name} { return 1; }        /* _entity.id) */
+{name} { return tNAME; }        /* _entity.id) */
 
-{loop} { return 2; }        /* _loop */
+{loop} { return tLOOP; }        /* _loop */
 
-{data} { return 3;}         /* data_<pdbid> at start of file */
+{data} { return tDATA;}         /* data_<pdbid> at start of file */
 
-{semicolon_value} { return 4; } /* eg. ;value\n;	 */
+{semicolon_value} { return tSEMICOLON; } /* eg. ;value\n;	 */
 
 {double_quote_value} {
-    if (yytext[0] == '\"') {  /* "value" */
-        yytext[0] = ' ';
-        shoveleft(yytext);
-        int n = strlen(yytext);
-        yytext[n-1] = '\0';
-        }
-    return 5;
-}
+                            if (yytext[0] == '\"') {  /* "value" */
+                                yytext[0] = ' ';
+                                shoveleft(yytext);
+                                int n = strlen(yytext);
+                                yytext[n-1] = '\0';
+                            }
+                            return tDOUBLE_QUOTE;
+                        }
 
 {single_quote_value} {   /* 'value' */
-if (yytext[0] == '\'') {
-    yytext[0] = ' ';
-    shoveleft(yytext);
-    int n = strlen(yytext);
-    yytext[n-1] = '\0';
-    }
-    return 6;
-}
+                            if (yytext[0] == '\'') {
+                                yytext[0] = ' ';
+                                shoveleft(yytext);
+                                int n = strlen(yytext);
+                                yytext[n-1] = '\0';
+                            }
+                            return tSINGLE_QUOTE;
+                        }
 
-{free_value} { return 7; }  /* value */
+{free_value} { return tVALUE; }  /* value */
 
 [ \t\n]+					/* ignore */
 
 %%
 
-
 void mmcif_set_file(FILE *fp)
 {
-    yyin=fp;
+yyin=fp;
 }
 
 int mmcif_get_token()
@@ -75,24 +75,24 @@ char *mmcif_get_string(void)
 }
 
 /*
-   s h o v e l e f t
-   Shove a string to the left.
-   mok 2021-08-23.
+  s h o v e l e f t
+  Shove a string to the left.
+  mok 2021-08-23.
 */
 char *shoveleft (char *str)
 {
-  register char *t, *s;
+    register char *t, *s;
 
-  s = str;
-  if (*s < 33) {
-    t = s;
-    while (*t) {
-      *t = *(t+1);
-      t++;
+    s = str;
+    if (*s < 33) {
+        t = s;
+        while (*t) {
+            *t = *(t+1);
+            t++;
+        }
     }
-  }
-  else {
-    s++;
-  }
-  return str;
+    else {
+        s++;
+    }
+    return str;
 }

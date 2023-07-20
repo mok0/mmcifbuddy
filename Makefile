@@ -1,27 +1,38 @@
-# $Id: Makefile,v 1.5 2000/08/17 23:14:19 mok Exp $
-
 SHELL=/bin/sh
 
-all:	mmciflexmodule.so mmcif_test
+all:	mmciflexermodule.so test_mmcif_lex test_strtok_r test_enum
 
-mmciflexmodule.so: lex.yy.c mmciflexmodule.c
+PHONY: mmflexermodule.so
+mmciflexermodule.so: lex.mmcif.c mmciflexermodule.c
 	python3 -m build --wheel
 
-lex.yy.c: mmcif.lex
+lex.mmcif.c: mmcif.lex
 	$(LEX) mmcif.lex
 
-mmcif_test: mmcif_test.o lex.yy.o
+test_mmcif_lex: test_mmcif_lex.o lex.mmcif.o
 	$(CC) $^ -o $@
 
-.PHONY:	clean veryclean mmciflexmodule.so
+test_enum: test_enum.o
+	$(CC) $^ -o $@
 
+test_strtok_r: test_strtok_r.o
+	$(CC) $^ -o $@
+
+.PHONY: clean-cache
+clean-cache:
+	@find . -name *.egg-info -exec rm -rf {} +
+	@find . -name *.pyc -exec rm -rf {} +
+	@find . -name *.pyo -exec rm -rf {} +
+	@find . -name *.so -exec rm -rf {} +
+	@find . -name *.pyd -exec rm -rf {} +
+
+.PHONY: clean
 clean:
-	$(RM)  *.o
+	$(RM)  *.o *~
+	$(RM) -r mmciflexer.egg-info/
 
+.PHONY: veryclean
 veryclean: clean
-	$(RM)  *.so lex.yy.c mmcif_test *~
+	$(RM)  *.so lex.mmcif.c mmcif_test *~ lex.yy.c
 	$(RM) -r build/
-
-#  Local Variables:
-#  mode: makefile
-#  End:
+	$(RM) -r dist/
