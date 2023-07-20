@@ -61,7 +61,7 @@ semicolon_value		^;(.*\n[^;])*.*\n;
 
 void mmcif_set_file(FILE *fp)
 {
-yyin=fp;
+    yyin=fp;
 }
 
 int mmcif_get_token()
