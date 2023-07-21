@@ -1,7 +1,7 @@
 from setuptools import setup, Extension
 
 module1 = Extension('mmciflexer',
-                    sources = ['mmciflexermodule.c', 'lex.yy.c'],
+                    sources = ['src/mmciflexermodule.c', 'src/lex.mmcif.c'],
                     language="c",
                     libraries=[])
 

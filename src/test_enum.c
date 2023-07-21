@@ -12,5 +12,4 @@ int main() {
   printf("tVALUE = %d\n",(int) tVALUE);
   printf("tDATALINE = %d\n",(int) tDATALINE);
   printf("TOKENS = %d\n",(int) TOKENS);
-
 }

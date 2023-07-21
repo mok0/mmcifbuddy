@@ -20,7 +20,11 @@ static PyObject *MMCIFlexer_open_file(PyObject *self, PyObject *args)
   fp = fopen(filename, "r");
   mmcif_set_file(fp);
   //Py_INCREF(Py_None);
-  return Py_None;
+
+   /* return the fp integer */
+  return Py_BuildValue("i", fp);
+
+  //return Py_None;
 }
 
 
@@ -93,6 +97,8 @@ PyMODINIT_FUNC PyInit_mmciflexer()
   PyModule_AddIntConstant(module, "DOUBLE_QUOTE", tDOUBLE_QUOTE);
   PyModule_AddIntConstant(module, "SINGLE_QUOTE", tSINGLE_QUOTE);
   PyModule_AddIntConstant(module, "VALUE", tVALUE);
+  PyModule_AddIntConstant(module, "DATALINE", tDATALINE);
+  PyModule_AddIntConstant(module, "COMMENT", tHASH);
 
   return module;
 }

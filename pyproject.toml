@@ -3,18 +3,16 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mmciflexer"
-authors = [
-    {name = "Morten Kjeldgaard", email = "mortenkjeldgaard@gmail.com"},
-]
+name = "mmcifreader"
+authors = [{name = "Morten Kjeldgaard", email = "mortenkjeldgaard@gmail.com"}]
 description = "Python module to parse mmCIF file"
-#readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.7"
 license = {text = "BSD-3-Clause"}
 dynamic = ["version"]
 
 [tool.setuptools]
-py-modules = []
+packages =  ["mmciflexer", "mmcifreader"]
 
 [tool.setuptools.dynamic]
 version = {attr = "mmcifreader.__version__"}
