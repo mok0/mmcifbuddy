@@ -4,6 +4,10 @@
 #include <string.h>
 #include "mmciflexer.h"
 char *shoveleft (char *str);
+
+#define MAXBUFSIZ 200
+static char buf[MAXBUFSIZ], *bptr;
+
 %}
 
 %option never-interactive
@@ -12,6 +16,8 @@ char *shoveleft (char *str);
 %option noyywrap
 %option nounput
 
+%x sSEMICOLON  
+
 comment			#.*\n
 name			_[^ \t\n]+
 loop			[Ll][Oo][Oo][Pp]_
@@ -19,7 +25,7 @@ data			[Dd][Aa][Tt][Aa]_[^ \t\n]+
 free_value		[^ \t\n]+
 single_quote_value	'[^'\n]*'
 double_quote_value	\"[^"\n]*\"
-semicolon_value		^;(.*\n[^;])*.*\n;
+semicolon_value		^;(.*\n)
 
 %%
 
@@ -31,10 +37,28 @@ semicolon_value		^;(.*\n[^;])*.*\n;
 
 {data} { return tDATA;}         /* data_<pdbid> at start of file */
 
-{semicolon_value} { return tSEMICOLON; } /* eg. ;value\n;	 */
+{semicolon_value}   { 
+                        BEGIN(sSEMICOLON); 
+                        yytext[0] = ' ';  /* There is a leading semicolon in the first string */
+                        shoveleft(yytext);   /* get rid of it */
+                        int n = strlen(yytext);
+                        yytext[n-1] = '\0';
+                        return tDATALINE_BEGIN;
+                    }
+
+<sSEMICOLON>;\n     {  
+                        BEGIN(INITIAL);  
+                        return tEND;
+                    }
+
+
+<sSEMICOLON>.*\n    {    
+                        return tDATALINE;
+                    }
+
 
 {double_quote_value} {
-                            if (yytext[0] == '\"') {  /* "value" */
+                            if (yytext[0] == '\"') {  /* get rid of double quote characters */
                                 yytext[0] = ' ';
                                 shoveleft(yytext);
                                 int n = strlen(yytext);
@@ -44,7 +68,7 @@ semicolon_value		^;(.*\n[^;])*.*\n;
                         }
 
 {single_quote_value} {   /* 'value' */
-                            if (yytext[0] == '\'') {
+                            if (yytext[0] == '\'') {  /* get rid of single quote characters */
                                 yytext[0] = ' ';
                                 shoveleft(yytext);
                                 int n = strlen(yytext);
@@ -63,6 +87,7 @@ void mmcif_set_file(FILE *fp)
 {
     yyin=fp;
 }
+
 
 int mmcif_get_token()
 {

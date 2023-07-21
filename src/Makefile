@@ -21,7 +21,7 @@ mmciflexermodule.so: mmciflexermodule.c lex.mmcif.c mmciflexer.h
 lex.mmcif.c: mmcif.lex
 	$(LEX) mmcif.lex
 
-test_mmcif_lex: test_mmcif_lex.o lex.mmcif.o
+test_mmcif_lex: test_mmcif_lex.o lex.mmcif.c
 	$(CC) $^ -o $@
 
 test_enum: test_enum.o

@@ -11,5 +11,6 @@ int main() {
   printf("tSINGLE_QUOTE = %d\n",(int) tSINGLE_QUOTE);
   printf("tVALUE = %d\n",(int) tVALUE);
   printf("tDATALINE = %d\n",(int) tDATALINE);
-  printf("TOKENS = %d\n",(int) TOKENS);
+  printf("tHASH = %d\n",(int) tHASH);
+  printf("TOKENS = %d\n",(int) tEND);
 }
