@@ -12,9 +12,9 @@ MMCIFLEXERMODULE := mmciflexermodule$(EXT_SUFFIX)
 LOCAL_INSTALL_DIR := ../mmcifreader/mmciflexer
 
 .PHONY: all
-all: $(MMCIFLEXERMODULE) test_mmcif_lex test_strtok_r test_enum 
+all: $(MMCIFLEXERMODULE) test_mmcif_lex 
 
-install: build
+install: all
 	install $(MMCIFLEXERMODULE) $(LOCAL_INSTALL_DIR)
 
 $(MMCIFLEXERMODULE): mmciflexermodule.o lex.mmcif.o 

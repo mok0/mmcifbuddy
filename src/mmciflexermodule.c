@@ -8,55 +8,38 @@ int mmcif_get_token();
 char *mmcif_get_string(void);
 void mmcif_set_file(FILE *fp);
 
-
 FILE *fp;
 
 static PyObject *MMCIFlexer_open_file(PyObject *self, PyObject *args)
 {
-  char *filename;
+  
+  PyObject *file = NULL;
 
-  /*
-    To pass a Python file object instead of a file name
-    use this
- if (!PyArg_ParseTuple(args, "O", &cb)) {
-        return 0;
-    }
+ /*   To pass a Python file object instead of a file name use this */
+  if (!PyArg_ParseTuple(args, "O", &file)) {
+        return NULL;
+  }
 
-
-   */
-
-
-
-  if (!PyArg_ParseTuple(args, "s", &filename))
-    return NULL;
-  fp = fopen(filename, "r");
-
-  if (!fp) {
-    PyErr_SetString(PyExc_FileNotFoundError, "File not found");
+  int fd =  PyObject_AsFileDescriptor(file);
+  if (fd < 0) {
     return NULL;
   }
 
+  fp = fdopen(fd, "r");
   mmcif_set_file(fp);
 
-  /* return the fp integer */
-  return Py_BuildValue("i", fp);
-
-  //return Py_None;
-}
-
-
-static PyObject *MMCIFlexer_close_file(PyObject *self, PyObject *args)
-{
-  /* verify no arguments */
-  if (!PyArg_ParseTuple(args, ""))
-    return NULL;
-  fclose(fp);
-  //	Py_INCREF(Py_None);
   return Py_None;
 }
 
 
-static PyObject *MMCIFlexer_get_token(PyObject *self, PyObject *args)
+static PyObject *MMCIFlexer_close_file(PyObject *self)
+{
+  fclose(fp);
+  return Py_None;
+}
+
+
+static PyObject *MMCIFlexer_get_token(PyObject *self)
 {
   int flag;
   char *value="";
@@ -80,8 +63,8 @@ static PyObject *MMCIFlexer_get_token(PyObject *self, PyObject *args)
 static PyMethodDef MMCIFMethods[]=
   {
     {"open_file", MMCIFlexer_open_file, METH_VARARGS, "Open mmCIF file for reading"},
-    {"close_file", MMCIFlexer_close_file, METH_VARARGS, "Close mmCIF file"},
-    {"get_token", MMCIFlexer_get_token, METH_VARARGS, "Get token from mmCIF file"},
+    {"close_file", (PyCFunction)MMCIFlexer_close_file, METH_NOARGS, "Close mmCIF file"},
+    {"get_token", (PyCFunction)MMCIFlexer_get_token, METH_NOARGS, "Get next token from mmCIF file"},
     {NULL, NULL, 0, NULL}  /* Sentinel */
   };
 
@@ -107,17 +90,17 @@ PyMODINIT_FUNC PyInit__mmciflexer()
   PyObject *module = PyModule_Create(&_mmciflexermodule);
 
   /* Add int constant by name */
-  PyModule_AddIntConstant(module, "NAME", tNAME);
-  PyModule_AddIntConstant(module, "LOOP", tLOOP);
-  PyModule_AddIntConstant(module, "DATA", tDATA);
-  PyModule_AddIntConstant(module, "SEMICOLON", tSEMICOLON );
-  PyModule_AddIntConstant(module, "DOUBLE_QUOTE", tDOUBLE_QUOTE);
-  PyModule_AddIntConstant(module, "SINGLE_QUOTE", tSINGLE_QUOTE);
-  PyModule_AddIntConstant(module, "VALUE", tVALUE);
-  PyModule_AddIntConstant(module, "DATALINE_BEGIN", tDATALINE_BEGIN);
-  PyModule_AddIntConstant(module, "DATALINE", tDATALINE);
-  PyModule_AddIntConstant(module, "END", tEND);
-  PyModule_AddIntConstant(module, "COMMENT", tHASH);
+  PyModule_AddIntConstant(module, "tNAME", tNAME);
+  PyModule_AddIntConstant(module, "tLOOP", tLOOP);
+  PyModule_AddIntConstant(module, "tDATA", tDATA);
+  PyModule_AddIntConstant(module, "tSEMICOLON", tSEMICOLON );
+  PyModule_AddIntConstant(module, "tDOUBLE_QUOTE", tDOUBLE_QUOTE);
+  PyModule_AddIntConstant(module, "tSINGLE_QUOTE", tSINGLE_QUOTE);
+  PyModule_AddIntConstant(module, "tVALUE", tVALUE);
+  PyModule_AddIntConstant(module, "tDATALINE_BEGIN", tDATALINE_BEGIN);
+  PyModule_AddIntConstant(module, "tDATALINE", tDATALINE);
+  PyModule_AddIntConstant(module, "tEND", tEND);
+  PyModule_AddIntConstant(module, "tCOMMENT", tCOMMENT);
 
   return module;
 }

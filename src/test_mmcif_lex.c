@@ -11,7 +11,7 @@ int main(void)
   int flag=1;
   char *return_type_name[] = {"ZERO","tNAME","tLOOP","tDATA","tSEMICOLON",
                             "tDOUBLE_QUOTE", "tSINGLE_QUOTE","tVALUE",
-                            "tDATALINE_BEGIN", "tDATALINE", "tEND", "tHASH"};
+                            "tDATALINE_BEGIN", "tDATALINE", "tEND", "tCOMMENT"};
 
 
 
