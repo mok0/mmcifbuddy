@@ -91,15 +91,18 @@ PyMODINIT_FUNC PyInit__mmciflexer()
 
   /* Add int constant by name */
   PyModule_AddIntConstant(module, "tNAME", tNAME);
-  PyModule_AddIntConstant(module, "tLOOP", tLOOP);
-  PyModule_AddIntConstant(module, "tDATA", tDATA);
+  PyModule_AddIntConstant(module, "tLOOP", tLOOP); 
+  PyModule_AddIntConstant(module, "tLOOP_END", tLOOP_END);
+  PyModule_AddIntConstant(module, "tID", tID);
   PyModule_AddIntConstant(module, "tSEMICOLON", tSEMICOLON );
+  /* 
   PyModule_AddIntConstant(module, "tDOUBLE_QUOTE", tDOUBLE_QUOTE);
-  PyModule_AddIntConstant(module, "tSINGLE_QUOTE", tSINGLE_QUOTE);
-  PyModule_AddIntConstant(module, "tVALUE", tVALUE);
+  PyModule_AddIntConstant(module, "tSINGLE_QUOTE", tSINGLE_QUOTE); 
+  */
+  PyModule_AddIntConstant(module, "tDATA", tDATA);
   PyModule_AddIntConstant(module, "tDATALINE_BEGIN", tDATALINE_BEGIN);
   PyModule_AddIntConstant(module, "tDATALINE", tDATALINE);
-  PyModule_AddIntConstant(module, "tEND", tEND);
+  PyModule_AddIntConstant(module, "tDATALINE_END", tDATALINE_END);
   PyModule_AddIntConstant(module, "tCOMMENT", tCOMMENT);
 
   return module;

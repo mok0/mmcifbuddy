@@ -1,4 +1,5 @@
-/*#include "mmcifparser.c"*/
+#define WANT_RETURN_TYPES
+#include "mmciflexer.h"
 #include <stdio.h>
 
 int mmcif_get_token();
@@ -9,12 +10,7 @@ void mmcif_set_file(FILE *fp);
 int main(void)
 {
   int flag=1;
-  char *return_type_name[] = {"ZERO","tNAME","tLOOP","tDATA","tSEMICOLON",
-                            "tDOUBLE_QUOTE", "tSINGLE_QUOTE","tVALUE",
-                            "tDATALINE_BEGIN", "tDATALINE", "tEND", "tCOMMENT"};
-
-
-
+ 
   mmcif_set_file(stdin);
 
   while(flag) {

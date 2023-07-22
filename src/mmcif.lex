@@ -28,11 +28,11 @@ semicolon_value		^;(.*\n)
 
 {comment}					/* ignore */
 
-{name} { return tNAME; }        /* _entity.id) */
+{name} { return tNAME; }        /* _entity.id */
 
 {loop} { return tLOOP; }        /* _loop */
 
-{data} { return tDATA;}         /* data_<pdbid> at start of file */
+{data} { return tID;}         /* data_<pdbid> at start of file */
 
 {semicolon_value}   { 
                         BEGIN(sSEMICOLON); 
@@ -45,7 +45,7 @@ semicolon_value		^;(.*\n)
 
 <sSEMICOLON>;\n     {  
                         BEGIN(INITIAL);  
-                        return tEND;
+                        return tDATALINE_END;
                     }
 
 
@@ -61,7 +61,7 @@ semicolon_value		^;(.*\n)
                                 int n = strlen(yytext);
                                 yytext[n-1] = '\0';
                             }
-                            return tDOUBLE_QUOTE;
+                            return tDATA; /* tDOUBLE_QUOTE; */
                         }
 
 {single_quote_value} {   /* 'value' */
@@ -71,10 +71,10 @@ semicolon_value		^;(.*\n)
                                 int n = strlen(yytext);
                                 yytext[n-1] = '\0';
                             }
-                            return tSINGLE_QUOTE;
+                            return tDATA; /* tSINGLE_QUOTE; */
                         }
 
-{free_value} { return tVALUE; }  /* value */
+{free_value} { return tDATA; }  /* value */
 
 [ \t\n]+					/* ignore */
 
