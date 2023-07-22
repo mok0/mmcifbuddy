@@ -1,4 +1,4 @@
-import mmciflexer
+from . import mmciflexer
 
 # Class that wraps mmciflexer in a file-like object,
 # that is also context aware

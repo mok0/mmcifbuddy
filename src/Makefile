@@ -1,24 +1,38 @@
 
-# building 'mmciflexer' extension
-# clang -Wsign-compare -Wunreachable-code -fno-common -dynamic -DNDEBUG -g -fwrapv -O3 -Wall -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk -I/private/var/folders/69/j1sbdfkd6bv6mctm27rd26fc0000gn/T/build-env-yl8vlswv/include -I/usr/local/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -c lex.mmcif.c -o build/temp.macosx-10.15-x86_64-cpython-311/lex.mmcif.o
-
+# Building 'mmciflexer' extension
 
 SHELL=/bin/sh
 
-python_includes := $(shell python3-config --includes)
-python_cflags := $(shell python3-config --cflags)
-python_ldflags := $(shell python3-config --ldflags)
+#INCLUDEPY = -I/usr/local/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11
+INCLUDEPY := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['INCLUDEPY'])")
+#PY_CFLAGS= -Wsign-compare -Wunreachable-code -fno-common -dynamic -DNDEBUG -g -fwrapv -O3 -Wall -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk
+PY_CFLAGS := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['PY_CFLAGS'])")
+#LDSHARED = -bundle -undefined dynamic_lookup -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk
+LDSHARED := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['LDSHARED'][6:])")
+#EXT_SUFFIX = .cpython-311-darwin.so
+EXT_SUFFIX := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['EXT_SUFFIX'])")
 
-all:	test_mmcif_lex test_strtok_r test_enum 
+LOCAL_INSTALL_DIR = ../mmcifreader/mmciflexer
+
+.PHONy: all
+all: build test_mmcif_lex test_strtok_r test_enum 
 
 PHONY: build
-build: mmciflexermodule.so
-	
+build: mmciflexermodule$(EXT_SUFFIX)
 
-mmciflexermodule.so: mmciflexermodule.c lex.mmcif.c mmciflexer.h
-	gcc $(python_cflags) $(python_includes) $(python_ldflags) $< -o $@
+install: build
+	install mmciflexermodule$(EXT_SUFFIX) $(LOCAL_INSTALL_DIR)
 
-lex.mmcif.c: mmcif.lex
+mmciflexermodule$(EXT_SUFFIX): mmciflexermodule.o lex.mmcif.o 
+	clang $(LDSHARED) $^ -o $@
+
+mmciflexermodule.o: mmciflexermodule.c mmciflexer.h
+	$(CC) -c $(PY_CFLAGS) -I$(INCLUDEPY) $< -o $@
+
+lex.mmcif.o: lex.mmcif.c 
+	$(CC) -c $(PY_CFLAGS) $< -o $@
+
+lex.mmcif.c: mmcif.lex mmciflexer.h
 	$(LEX) mmcif.lex
 
 test_mmcif_lex: test_mmcif_lex.o lex.mmcif.c
@@ -34,3 +48,7 @@ test_strtok_r: test_strtok_r.o
 clean:
 	$(RM)  *.o *~
 	$(RM)  *.so lex.mmcif.c mmcif_test *~ lex.yy.c
+
+.PHONY: veryclean
+veryclean: clean
+	$(RM) mmciflexermodule$(EXT_SUFFIX)
