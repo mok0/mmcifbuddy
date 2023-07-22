@@ -1,7 +1,4 @@
-
-# Building 'mmciflexer' extension
-
-SHELL=/bin/sh
+SHELL = /bin/sh
 
 #INCLUDEPY = -I/usr/local/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11
 INCLUDEPY := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['INCLUDEPY'])")
@@ -11,19 +8,16 @@ PY_CFLAGS := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_va
 LDSHARED := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['LDSHARED'][6:])")
 #EXT_SUFFIX = .cpython-311-darwin.so
 EXT_SUFFIX := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['EXT_SUFFIX'])")
+MMCIFLEXERMODULE := mmciflexermodule$(EXT_SUFFIX)
+LOCAL_INSTALL_DIR := ../mmcifreader/mmciflexer
 
-LOCAL_INSTALL_DIR = ../mmcifreader/mmciflexer
-
-.PHONy: all
-all: build test_mmcif_lex test_strtok_r test_enum 
-
-PHONY: build
-build: mmciflexermodule$(EXT_SUFFIX)
+.PHONY: all
+all: $(MMCIFLEXERMODULE) test_mmcif_lex test_strtok_r test_enum 
 
 install: build
-	install mmciflexermodule$(EXT_SUFFIX) $(LOCAL_INSTALL_DIR)
+	install $(MMCIFLEXERMODULE) $(LOCAL_INSTALL_DIR)
 
-mmciflexermodule$(EXT_SUFFIX): mmciflexermodule.o lex.mmcif.o 
+$(MMCIFLEXERMODULE): mmciflexermodule.o lex.mmcif.o 
 	clang $(LDSHARED) $^ -o $@
 
 mmciflexermodule.o: mmciflexermodule.c mmciflexer.h
