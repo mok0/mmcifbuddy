@@ -12,7 +12,7 @@ license = {text = "BSD-3-Clause"}
 dynamic = ["version"]
 
 [tool.setuptools]
-packages =  ["mmciflexer", "mmcifreader"]
+packages =  ["mmcifreader", "mmcifreader.mmciflexer"]
 
 [tool.setuptools.dynamic]
 version = {attr = "mmcifreader.__version__"}
