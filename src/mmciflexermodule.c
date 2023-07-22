@@ -12,30 +12,30 @@ FILE *fp;
 
 static PyObject *MMCIFlexer_open_file(PyObject *self, PyObject *args)
 {
-  
-  PyObject *file = NULL;
+  char *filename;
 
- /*   To pass a Python file object instead of a file name use this */
-  if (!PyArg_ParseTuple(args, "O", &file)) {
-        return NULL;
+  if (!PyArg_ParseTuple(args, "s", &filename)) {
+      return NULL;
   }
 
-  int fd =  PyObject_AsFileDescriptor(file);
-  if (fd < 0) {
+  fp = fopen(filename, "r");
+  if (!fp) {
+     PyErr_SetString(PyExc_FileNotFoundError, "File not found");
     return NULL;
   }
-
-  fp = fdopen(fd, "r");
+  
   mmcif_set_file(fp);
 
-  return Py_None;
+  /* The value of the fp pointer is returned */
+  return Py_BuildValue("i", fp);
 }
 
 
 static PyObject *MMCIFlexer_close_file(PyObject *self)
 {
-  fclose(fp);
-  return Py_None;
+  int status = fclose(fp);
+  /* Upon successful completion 0 is returned.  Otherwise, EOF is returned */
+  return Py_BuildValue("i", status);
 }
 
 
@@ -47,7 +47,7 @@ static PyObject *MMCIFlexer_get_token(PyObject *self)
   /* get token number */
   flag = mmcif_get_token();
 
-  /* if flag==0 we are EOF */
+  /* if flag==0 we are EOF, if not get the string */
   if(flag) {
     value = mmcif_get_string();
   }

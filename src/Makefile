@@ -8,7 +8,7 @@ PY_CFLAGS := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_va
 LDSHARED := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['LDSHARED'][6:])")
 #EXT_SUFFIX = .cpython-311-darwin.so
 EXT_SUFFIX := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['EXT_SUFFIX'])")
-MMCIFLEXERMODULE := mmciflexermodule$(EXT_SUFFIX)
+MMCIFLEXERMODULE := _mmciflexer$(EXT_SUFFIX)
 LOCAL_INSTALL_DIR := ../mmcifreader/mmciflexer
 
 .PHONY: all
