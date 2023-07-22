@@ -10,7 +10,9 @@ int main() {
   printf("tDOULBE_QUOTE = %d\n",(int) tDOUBLE_QUOTE);
   printf("tSINGLE_QUOTE = %d\n",(int) tSINGLE_QUOTE);
   printf("tVALUE = %d\n",(int) tVALUE);
+  printf("tDATALINE_BEGIN = %d\n",(int) tDATALINE_BEGIN);
   printf("tDATALINE = %d\n",(int) tDATALINE);
+  printf("tEND = %d\n",(int) tEND);
   printf("tHASH = %d\n",(int) tHASH);
-  printf("TOKENS = %d\n",(int) tEND);
+
 }

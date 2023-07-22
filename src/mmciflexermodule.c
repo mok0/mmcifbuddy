@@ -15,13 +15,30 @@ static PyObject *MMCIFlexer_open_file(PyObject *self, PyObject *args)
 {
   char *filename;
 
+  /*
+    To pass a Python file object instead of a file name
+    use this
+ if (!PyArg_ParseTuple(args, "O", &cb)) {
+        return 0;
+    }
+
+
+   */
+
+
+
   if (!PyArg_ParseTuple(args, "s", &filename))
     return NULL;
   fp = fopen(filename, "r");
-  mmcif_set_file(fp);
-  //Py_INCREF(Py_None);
 
-   /* return the fp integer */
+  if (!fp) {
+    PyErr_SetString(PyExc_FileNotFoundError, "File not found");
+    return NULL;
+  }
+
+  mmcif_set_file(fp);
+
+  /* return the fp integer */
   return Py_BuildValue("i", fp);
 
   //return Py_None;
@@ -73,9 +90,9 @@ static PyMethodDef MMCIFMethods[]=
    is not an array of structures, but rather a single structure that’s
    used for module definition:
 */
-static struct PyModuleDef mmciflexermodule = {
+static struct PyModuleDef _mmciflexermodule = {
   PyModuleDef_HEAD_INIT,
-  "mmciflexer",
+  "_mmciflexer",
   "Python module to read tokens from an mmCIF file",
   -1,
   MMCIFMethods
@@ -85,9 +102,9 @@ static struct PyModuleDef mmciflexermodule = {
   When a Python program imports your module for the first time, it
   will call PyInit_mmciflexer():
 */
-PyMODINIT_FUNC PyInit_mmciflexer()
+PyMODINIT_FUNC PyInit__mmciflexer()
 {
-  PyObject *module = PyModule_Create(&mmciflexermodule);
+  PyObject *module = PyModule_Create(&_mmciflexermodule);
 
   /* Add int constant by name */
   PyModule_AddIntConstant(module, "NAME", tNAME);
@@ -97,7 +114,9 @@ PyMODINIT_FUNC PyInit_mmciflexer()
   PyModule_AddIntConstant(module, "DOUBLE_QUOTE", tDOUBLE_QUOTE);
   PyModule_AddIntConstant(module, "SINGLE_QUOTE", tSINGLE_QUOTE);
   PyModule_AddIntConstant(module, "VALUE", tVALUE);
+  PyModule_AddIntConstant(module, "DATALINE_BEGIN", tDATALINE_BEGIN);
   PyModule_AddIntConstant(module, "DATALINE", tDATALINE);
+  PyModule_AddIntConstant(module, "END", tEND);
   PyModule_AddIntConstant(module, "COMMENT", tHASH);
 
   return module;

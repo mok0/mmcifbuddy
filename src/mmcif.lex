@@ -5,9 +5,6 @@
 #include "mmciflexer.h"
 char *shoveleft (char *str);
 
-#define MAXBUFSIZ 200
-static char buf[MAXBUFSIZ], *bptr;
-
 %}
 
 %option never-interactive
