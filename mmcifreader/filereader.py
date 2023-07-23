@@ -37,8 +37,6 @@ class FileReader:
             raise StopIteration
         return token
 
-    
-
     def close(self):
         return mmciflexer.close_file()
 
