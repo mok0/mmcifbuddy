@@ -7,16 +7,19 @@ name = "mmcifreader"
 authors = [{name = "Morten Kjeldgaard", email = "mortenkjeldgaard@gmail.com"}]
 description = "Python module to parse mmCIF file"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 license = {text = "BSD-3-Clause"}
 classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dynamic = ["version"]
-dependencies = ["logguru"]
+dependencies = ["loguru"]
+
+[project.scripts]
+my-script = "my_package.module:function"
 
 [tool.setuptools]
 packages =  ["mmcifreader", "mmcifreader.mmciflexer"]
 
 [tool.setuptools.dynamic]
-version = {attr = "mmcifreader.__version__"}
+version = {attr = "mmcifreader.version.__version__"}

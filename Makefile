@@ -18,10 +18,6 @@ clean:
 clean-cache:
 	@find . -name *.egg-info -exec rm -rf {} +
 	@find . -name *.pyc -exec rm -rf {} +
-	@find . -name *.pyo -exec rm -rf {} +
-	@find . -name *.so -exec rm -rf {} +
-	@find . -name *.pyd -exec rm -rf {} +
-
 
 .PHONY: veryclean
 veryclean: clean-cache clean
