@@ -1,3 +1,4 @@
+
 from setuptools import setup, Extension
 
 ext_module = Extension('mmcifreader.mmciflexer._mmciflexer',

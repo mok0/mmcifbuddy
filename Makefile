@@ -9,7 +9,6 @@ mmciflexermodule.so:
 .PHONY: install
 install: 
 	python3 -m build --wheel
-	python3 updateversion.py mmcifreader/__init__.py
 
 .PHONY: clean
 clean:

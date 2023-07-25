@@ -1,8 +1,3 @@
-__version__ = '0.3.0'
-
-###import mmcifreader.mmciflexer
-
-
 import sys
 from loguru import logger
 from mmcifreader.timer import Timer
@@ -12,7 +7,6 @@ from mmcifreader import mmciflexer as lex
 logger.remove()
 logger.add(sys.stdout, colorize=True,
            format="<green>{time:YYYY-MM-DD HH:mm}</green> <level>{message}</level>")
-
 
 
 def parse(fname, verbose=False) -> dict:
@@ -57,13 +51,17 @@ def parse(fname, verbose=False) -> dict:
                 typ, token = handle_loop(D)
                 wait = True
 
+            case lex.tCOMMENT:
+                pass
+ 
             case _:
-                logger.warning(f"What is this? typ = {token}, token = {token}")
+                logger.warning(f"What is this? typ = {typ}, token = {token}")
 
         if not wait: # handle_loop already has next typ, token
             typ, token = lex.get_token()
         wait = False
 
+    lex.close_file()
     return D
  
 

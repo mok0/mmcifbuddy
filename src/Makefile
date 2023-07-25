@@ -32,16 +32,10 @@ lex.mmcif.c: mmcif.lex mmciflexer.h
 test_mmcif_lex: test_mmcif_lex.o lex.mmcif.c
 	$(CC) $^ -o $@
 
-test_enum: test_enum.o
-	$(CC) $^ -o $@
-
-test_strtok_r: test_strtok_r.o
-	$(CC) $^ -o $@
-
 .PHONY: clean
 clean:
 	$(RM)  *.o *~
-	$(RM)  *.so lex.mmcif.c mmcif_test *~ lex.yy.c
+	$(RM)  *.so lex.mmcif.c mmcif_test lex.yy.c
 
 .PHONY: veryclean
 veryclean: clean

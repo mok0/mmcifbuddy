@@ -51,6 +51,11 @@ static PyObject *MMCIFlexer_get_token(PyObject *self)
   if(flag) {
     value = mmcif_get_string();
   }
+ 
+ /* Treat doublequote and singlequote items as normal data */
+  if (flag == tDOUBLE_QUOTE || flag == tSINGLE_QUOTE) {
+    flag = tDATA;
+  }
 
   /* return the (tokennumber, string) tuple */
   return Py_BuildValue("(is)", flag, value);
@@ -94,8 +99,8 @@ PyMODINIT_FUNC PyInit__mmciflexer()
   PyModule_AddIntConstant(module, "tLOOP", tLOOP); 
   PyModule_AddIntConstant(module, "tLOOP_END", tLOOP_END);
   PyModule_AddIntConstant(module, "tID", tID);
-  PyModule_AddIntConstant(module, "tSEMICOLON", tSEMICOLON );
-  /* 
+  PyModule_AddIntConstant(module, "tSEMICOLON", tSEMICOLON ); 
+  /*
   PyModule_AddIntConstant(module, "tDOUBLE_QUOTE", tDOUBLE_QUOTE);
   PyModule_AddIntConstant(module, "tSINGLE_QUOTE", tSINGLE_QUOTE); 
   */

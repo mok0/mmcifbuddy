@@ -2,6 +2,10 @@
 #include "mmciflexer.h"
 #include <stdio.h>
 
+char *return_type_name[] = {"tEND_OF_FILE","tNAME","tLOOP", "tLOOP_END", 
+                            "tID","tSEMICOLON", "tDOUBLE_QUOTE", "tSINGLE_QUOTE", "tDATA",
+                            "tDATALINE_BEGIN", "tDATALINE", "tDATALINE_END", "tCOMMENT"};
+
 int mmcif_get_token();
 char *mmcif_get_string(void);
 void mmcif_set_file(FILE *fp);

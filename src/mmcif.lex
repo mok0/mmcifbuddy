@@ -26,17 +26,17 @@ semicolon_value		^;(.*\n)
 
 %%
 
-{comment}					/* ignore */
+{comment} { return tCOMMENT; }  /* line starting with # */
 
 {name} { return tNAME; }        /* _entity.id */
 
 {loop} { return tLOOP; }        /* _loop */
 
-{data} { return tID;}         /* data_<pdbid> at start of file */
+{data} { return tID;}           /* data_<pdbid> at start of file */
 
 {semicolon_value}   { 
-                        BEGIN(sSEMICOLON); 
-                        yytext[0] = ' ';  /* There is a leading semicolon in the first string */
+                        BEGIN(sSEMICOLON);   /* Enter semicolon state */
+                        yytext[0] = ' ';     /* There is a leading semicolon in the first string */
                         shoveleft(yytext);   /* get rid of it */
                         int n = strlen(yytext);
                         yytext[n-1] = '\0';
@@ -61,7 +61,7 @@ semicolon_value		^;(.*\n)
                                 int n = strlen(yytext);
                                 yytext[n-1] = '\0';
                             }
-                            return tDATA; /* tDOUBLE_QUOTE; */
+                            return tDOUBLE_QUOTE;
                         }
 
 {single_quote_value} {   /* 'value' */
@@ -71,12 +71,14 @@ semicolon_value		^;(.*\n)
                                 int n = strlen(yytext);
                                 yytext[n-1] = '\0';
                             }
-                            return tDATA; /* tSINGLE_QUOTE; */
+                            return tSINGLE_QUOTE;
                         }
 
 {free_value} { return tDATA; }  /* value */
 
 [ \t\n]+					/* ignore */
+
+<<EOF>>    { return 0; }
 
 %%
 
