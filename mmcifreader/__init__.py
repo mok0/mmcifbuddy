@@ -1,5 +1,6 @@
 import sys
 from loguru import logger
+from pathlib import Path
 from mmcifreader.timer import Timer
 from mmcifreader import mmciflexer as lex
 
@@ -11,6 +12,9 @@ logger.add(sys.stdout, colorize=True,
 
 def parse(fname, verbose=False) -> dict:
  
+    if isinstance(fname, Path):
+        fname = str(fname)
+
     status = lex.open_file(fname)
 
     # If we didn't get non zero status, bail out, otherwise
@@ -38,7 +42,8 @@ def parse(fname, verbose=False) -> dict:
                 typ, token = lex.get_token()
                 if typ != lex.tDATA:
                     if typ == lex.tDATALINE_BEGIN:
-                        handle_dataline(D, name, token)
+                        token = handle_dataline(typ, token)
+
                     else: # We always expect data after a name
                         typ_nam = lex.return_type_names[typ]
                         logger.error(f"Something went wrong with {name}, typ = {typ_nam}, token = {token}")
@@ -80,14 +85,15 @@ def handle_loop(D) -> tuple[str, str]:
         loopdata.append([])
 
     col = 0
-    while typ == lex.tDATA:
+    while typ in (lex.tDATA, lex.tDATALINE_BEGIN):
         loopdata[col].append(token)
         col += 1
         if col > qsize-1:
             col = 0
         typ, token = lex.get_token()
-        if typ != lex.tDATA:
-            break
+        if typ == lex.tDATALINE_BEGIN:
+            token = handle_dataline(typ, token) 
+            loopdata[col].append(token)
  
     for i, name in enumerate(Q):
         D[name] = loopdata[i]
@@ -96,9 +102,8 @@ def handle_loop(D) -> tuple[str, str]:
     return typ, token
  
 
-def handle_dataline(D, name, firsttoken) -> None:
-    L = [firsttoken]
-
+def handle_dataline(typ, token) -> list:
+    L = [token]
     typ, token = lex.get_token()
     while typ != lex.tDATALINE_END:
         L.append(token)
@@ -106,4 +111,5 @@ def handle_dataline(D, name, firsttoken) -> None:
 
     # We still need the last token
     #L.append(token) # no it's just ;\n
-    D[name] = L
+    return L
+  
