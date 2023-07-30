@@ -11,16 +11,23 @@ EXT_SUFFIX := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_v
 MMCIFLEXERMODULE := _mmciflexer$(EXT_SUFFIX)
 LOCAL_INSTALL_DIR := ../mmcifreader/mmciflexer
 
+#GIT_HASH = $(shell git rev-parse --short HEAD)
+#COMPILE_TIME = $(shell date -u +'%Y-%m-%d %H:%M:%S UTC')
+#GIT_BRANCH = $(shell git branch --show-current)
+#VERSION_FLAGS = "-DGIT_HASH=\"$(GIT_HASH)\" -DCOMPILE_TIME=\"$(COMPILE_TIME)\" -DGIT_BRANCH=\"$(GIT_BRANCH)\""
+
+
 .PHONY: all
 all: $(MMCIFLEXERMODULE) test_mmcif_lex 
 
 install: all
 	install $(MMCIFLEXERMODULE) $(LOCAL_INSTALL_DIR)
 
-$(MMCIFLEXERMODULE): mmciflexermodule.o lex.mmcif.o 
+$(MMCIFLEXERMODULE): mmciflexermodule.o lex.mmcif.o
 	clang $(LDSHARED) $^ -o $@
 
 mmciflexermodule.o: mmciflexermodule.c mmciflexer.h
+	python3 create_version_h.py 
 	$(CC) -c $(PY_CFLAGS) -I$(INCLUDEPY) $< -o $@
 
 lex.mmcif.o: lex.mmcif.c 
@@ -36,6 +43,7 @@ test_mmcif_lex: test_mmcif_lex.o lex.mmcif.c
 clean:
 	$(RM)  *.o *~
 	$(RM)  *.so lex.mmcif.c mmcif_test lex.yy.c
+	$(RM)	version.h
 
 .PHONY: veryclean
 veryclean: clean
