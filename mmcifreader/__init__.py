@@ -40,6 +40,9 @@ def parse(fname, verbose=False) -> dict:
             case lex.tNAME:
                 name = token
                 typ, token = lex.get_token()
+
+                # Handle special case where a tNAME token is followed by 
+                # a table (_tDATALINE_BEGIN) token
                 if typ != lex.tDATA:
                     if typ == lex.tDATALINE_BEGIN:
                         token = handle_dataline(typ, token)
@@ -49,8 +52,9 @@ def parse(fname, verbose=False) -> dict:
                         logger.error(f"Something went wrong with {name}, typ = {typ_nam}, token = {token}")
                         print(D)
                         raise SystemError
-                    #.    
-                    D[name] = token
+                    #.
+                        
+                D[name] = token
 
             case lex.tLOOP:
                 typ, token = handle_loop(D)
