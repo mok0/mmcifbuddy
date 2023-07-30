@@ -1,6 +1,15 @@
 /* -*- mode: bison -*- */
 
 %{
+
+#ifdef __APPLE__
+/* Disable certain compiler warnings that come from the lex generated code */ 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunreachable-code"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wunneeded-internal-declaration"
+#endif
+
 #include <string.h>
 #include "mmciflexer.h"
 char *shoveleft (char *str);
@@ -56,7 +65,11 @@ semicolon_value		^;(.*\n)
                     }
 
 
-<sSEMICOLON>.*\n    {    
+<sSEMICOLON>.*\n    {   
+                        if(yytext[mmcifleng-1] == '\n') { /* zap newline at eol if found */
+                            yytext[--mmcifleng] = '\0';
+                        }
+                        /* printf("Length = %zu, char = %d\n",mmcifleng, yytext[mmcifleng-1]); */
                         return tDATALINE;
                     }
 
