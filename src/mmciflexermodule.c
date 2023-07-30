@@ -43,6 +43,8 @@ static PyObject *MMCIFlexer_get_token(PyObject *self)
 {
   int flag;
   char *value="";
+  int ii;
+  double dd;
 
   /* get token number */
   flag = mmcif_get_token();
@@ -57,8 +59,27 @@ static PyObject *MMCIFlexer_get_token(PyObject *self)
     flag = tDATA;
   }
 
-  /* return the (tokennumber, string) tuple */
-  return Py_BuildValue("(is)", flag, value);
+  /* In this switch statement, we return (flag, value) tuples to caller */
+  switch (flag)
+  {
+      case tINT:
+        /* special case for tINT data types, return tDATA token */
+        ii = strtol(value, NULL, 10);
+        return Py_BuildValue("(il)", tDATA, ii);
+
+      case tFLOAT:
+      /* special case for tFLOAT data types, return tDATA token */  
+        dd = strtod(value, NULL);
+        return Py_BuildValue("(id)", tDATA, dd);
+  
+      default:
+        /* all other data types are returned as string values  */
+        return Py_BuildValue("(is)", flag, value);
+
+  }
+
+/* We never come here */
+
 }
 
 /*

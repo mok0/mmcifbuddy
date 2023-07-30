@@ -5,6 +5,11 @@
 #include "mmciflexer.h"
 char *shoveleft (char *str);
 
+
+/*
+float           -?[0-9]+\.[0-9]*
+also works because exponents are not used in mmcif files afaik
+*/
 %}
 
 %option never-interactive
@@ -19,6 +24,8 @@ comment			#.*\n
 name			_[^ \t\n]+
 loop			[Ll][Oo][Oo][Pp]_
 data			[Dd][Aa][Tt][Aa]_[^ \t\n]+
+integer         -?[0-9]+
+float          -?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
 free_value		[^ \t\n]+
 single_quote_value	'[^'\n]*'
 double_quote_value	\"[^"\n]*\"
@@ -74,9 +81,13 @@ semicolon_value		^;(.*\n)
                             return tSINGLE_QUOTE;
                         }
 
-{free_value} { return tDATA; }  /* value */
+{integer}    { return tINT;      /* integer token, returned as a string */   } 
 
-[ \t\n]+					/* ignore */
+{float}      { return tFLOAT;    /* floating point token, returned as a string */ }
+
+{free_value} { return tDATA;     /* string token value */ }
+
+[ \t\n]+					     /* ignore whitespace */
 
 <<EOF>>    { return 0; }
 
