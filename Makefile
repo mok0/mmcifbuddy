@@ -7,20 +7,24 @@ mmciflexermodule.so:
 	cd src && $(MAKE)
 
 .PHONY: install
-install: 
+install: clean-build-env
 	python3 updateversion.py mmcifreader/version.py
 	python3 -m build --wheel
 
 .PHONY: clean
 clean:
-	$(RM) *~
+	@$(RM) *~
+
+.PHONY: clean-build-env
+clean-build-env:
+	@find . -name *.egg-info -exec rm -rf {} +
+	@$(RM) -r build/
+
 
 .PHONY: clean-cache
 clean-cache:
-	@find . -name *.egg-info -exec rm -rf {} +
 	@find . -name *.pyc -exec rm -rf {} +
 
 .PHONY: veryclean
 veryclean: clean-cache clean
-	$(RM) -r build/
-	$(RM) -r dist/
+	@$(RM) -r dist/
