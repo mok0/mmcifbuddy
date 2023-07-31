@@ -10,9 +10,11 @@
 #pragma GCC diagnostic ignored "-Wunneeded-internal-declaration"
 #endif
 
+#include <ctype.h>
 #include <string.h>
 #include "mmciflexer.h"
 char *shoveleft (char *str);
+int strtrim (char *str, int length);
 
 
 /*
@@ -42,9 +44,12 @@ semicolon_value		^;(.*\n)
 
 %%
 
-{comment} { return tCOMMENT; }  /* line starting with # */
+{comment}               { 
+                            strtrim(yytext, yyleng); /* strip trailing whitespace */
+                            return tCOMMENT;   
+                        }
 
-{name} { return tNAME; }        /* _entity.id */
+{name} { return tNAME; }        /* e.g. _entity.id */
 
 {loop} { return tLOOP; }        /* _loop */
 
@@ -60,16 +65,14 @@ semicolon_value		^;(.*\n)
                     }
 
 <sSEMICOLON>;\n     {  
-                        BEGIN(INITIAL);  
+                        BEGIN(INITIAL); 
+                        strtrim(yytext, yyleng);
                         return tDATALINE_END;
                     }
 
 
 <sSEMICOLON>.*\n    {   
-                        if(yytext[mmcifleng-1] == '\n') { /* zap newline at eol if found */
-                            yytext[--mmcifleng] = '\0';
-                        }
-                        /* printf("Length = %zu, char = %d\n",mmcifleng, yytext[mmcifleng-1]); */
+                        strtrim(yytext, yyleng);
                         return tDATALINE;
                     }
 
@@ -78,8 +81,7 @@ semicolon_value		^;(.*\n)
                             if (yytext[0] == '\"') {  /* get rid of double quote characters */
                                 yytext[0] = ' ';
                                 shoveleft(yytext);
-                                int n = strlen(yytext);
-                                yytext[n-1] = '\0';
+                                yytext[yyleng-2] = '\0';
                             }
                             return tDOUBLE_QUOTE;
                         }
@@ -88,8 +90,7 @@ semicolon_value		^;(.*\n)
                             if (yytext[0] == '\'') {  /* get rid of single quote characters */
                                 yytext[0] = ' ';
                                 shoveleft(yytext);
-                                int n = strlen(yytext);
-                                yytext[n-1] = '\0';
+                                yytext[yyleng-2] = '\0';
                             }
                             return tSINGLE_QUOTE;
                         }
@@ -143,4 +144,22 @@ char *shoveleft (char *str)
         s++;
     }
     return str;
+}
+
+
+
+/*
+    s t r t r i m
+   Trim spaces and junk off the end of a character string
+   mk 950404, 2023-08-01
+*/
+
+int strtrim (char *str, int length) {
+  register char *s;
+ 
+  s = str + length - 1; 
+  while (isspace(*--s) && s > str)  /* trim spaces off end */
+    ;
+  *++s = '\0';
+  return s-str; // return new length
 }
