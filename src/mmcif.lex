@@ -3,7 +3,7 @@
 %{
 
 #ifdef __APPLE__
-/* Disable certain compiler warnings that come from the lex generated code */ 
+/* Disable certain compiler warnings that come from the lex generated code */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunreachable-code"
 #pragma GCC diagnostic ignored "-Wsign-compare"
@@ -16,6 +16,7 @@
 char *shoveleft (char *str);
 int strtrim (char *str, int length);
 
+static int in_loop;
 
 /*
 float           -?[0-9]+\.[0-9]*
@@ -29,7 +30,7 @@ also works because exponents are not used in mmcif files afaik
 %option noyywrap
 %option nounput
 
-%x sSEMICOLON  
+%x sSEMICOLON
 
 comment			#.*\n
 name			_[^ \t\n]+
@@ -44,18 +45,33 @@ semicolon_value		^;(.*\n)
 
 %%
 
-{comment}               { 
-                            strtrim(yytext, yyleng); /* strip trailing whitespace */
-                            return tCOMMENT;   
+{data}              {
+                        in_loop = 0;
+                        return tID;  /* data_<pdbid> at start of file */
+                    }
+
+{comment}           {
+                        strtrim(yytext, yyleng); /* strip trailing whitespace */
+                        if(in_loop) {
+                            /* uncertain if loop_ is always terminated by comment? */
+                            in_loop = 0;
+                            return tLOOP_END;
+                        } else {
+                        return tCOMMENT;
                         }
+                    }
 
-{name} { return tNAME; }        /* e.g. _entity.id */
+{name}              {
+                        return tNAME;  /* e.g. _entity.id */
+                    }
 
-{loop} { return tLOOP; }        /* _loop */
+{loop}              {
+                        in_loop = 1;
+                        return tLOOP;
+                    }
 
-{data} { return tID;}           /* data_<pdbid> at start of file */
 
-{semicolon_value}   { 
+{semicolon_value}   {
                         BEGIN(sSEMICOLON);   /* Enter semicolon state */
                         yytext[0] = ' ';     /* There is a leading semicolon in the first string */
                         shoveleft(yytext);   /* get rid of it */
@@ -64,14 +80,14 @@ semicolon_value		^;(.*\n)
                         return tDATALINE_BEGIN;
                     }
 
-<sSEMICOLON>;\n     {  
-                        BEGIN(INITIAL); 
+<sSEMICOLON>;\n     {
+                        BEGIN(INITIAL);
                         strtrim(yytext, yyleng);
                         return tDATALINE_END;
                     }
 
 
-<sSEMICOLON>.*\n    {   
+<sSEMICOLON>.*\n    {
                         strtrim(yytext, yyleng);
                         return tDATALINE;
                     }
@@ -84,7 +100,7 @@ semicolon_value		^;(.*\n)
                                 yytext[yyleng-2] = '\0';
                             }
                             return tDOUBLE_QUOTE;
-                        }
+                    }
 
 {single_quote_value} {   /* 'value' */
                             if (yytext[0] == '\'') {  /* get rid of single quote characters */
@@ -93,9 +109,9 @@ semicolon_value		^;(.*\n)
                                 yytext[yyleng-2] = '\0';
                             }
                             return tSINGLE_QUOTE;
-                        }
+                    }
 
-{integer}    { return tINT;      /* integer token, returned as a string */   } 
+{integer}    { return tINT;      /* integer token, returned as a string */   }
 
 {float}      { return tFLOAT;    /* floating point token, returned as a string */ }
 
@@ -103,7 +119,7 @@ semicolon_value		^;(.*\n)
 
 [ \t\n]+					     /* ignore whitespace */
 
-<<EOF>>    { return 0; }
+<<EOF>>      { return 0; }
 
 %%
 
@@ -147,7 +163,6 @@ char *shoveleft (char *str)
 }
 
 
-
 /*
     s t r t r i m
    Trim spaces and junk off the end of a character string
@@ -156,8 +171,8 @@ char *shoveleft (char *str)
 
 int strtrim (char *str, int length) {
   register char *s;
- 
-  s = str + length - 1; 
+
+  s = str + length - 1;
   while (isspace(*--s) && s > str)  /* trim spaces off end */
     ;
   *++s = '\0';

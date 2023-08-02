@@ -1,5 +1,6 @@
 import sys
 import queue
+from pathlib import Path
 from loguru import logger
 from states import StateName, State, BeginState, LoopState
 from mmcifreader import mmciflexer as lex
@@ -7,7 +8,6 @@ from mmcifreader import mmciflexer as lex
 logger.remove()
 logger.add(sys.stdout, colorize=True,
            format="<green>{time:YYYY-MM-DD HH:mm}</green> <level>{message}</level>")
-
 
 
 def handle_dataline(parser) -> list:
@@ -28,9 +28,9 @@ def handle_loop(parser) -> dict:
     Q = []
     loopdata = []
     typ, token = parser.get_token()
+
     while typ == lex.tNAME:
-        category, item = token.split('.')
-        Q.append((category, item))
+        Q.append(token)
         typ, token = parser.get_token()
     qsize = len(Q)
 
@@ -49,14 +49,11 @@ def handle_loop(parser) -> dict:
         if typ == lex.tDATALINE_BEGIN:
             thelist = handle_dataline(parser)
             loopdata[col].append(thelist)
+        #.
+    #.
+    for i, name in enumerate(Q):
+        D[name] = loopdata[i]
 
-    for i, tok in enumerate(Q):
-        category, item = tok
-        if not D.get(category):
-            D[category] = {}
-        D[category][item] = loopdata[i]
-
-    #logger.warning(f"In handle_loop, typ = {lex.token_type_names[typ]}, token = {token}")
     parser.unget.put((typ, token))
     return D
 
@@ -77,11 +74,9 @@ class Parser:
         self.data_blocks = {}
         self.current_dict = None
 
-
     def set_state(self, statename: StateName, state: State) -> None:
         self.state = state
         self.statename = statename
-
 
     def open(self):
         # Check if file exists and can be opened without errors,
@@ -113,7 +108,6 @@ class Parser:
         else:
             self.typ, self.token = self.unget.get()
 
-        #logger.debug(f"get_token, state is now {self.state}, typ is {lex.token_type_names[self.typ]}")
         return self.typ, self.token
 
 
@@ -132,30 +126,23 @@ class Parser:
 
                 case lex.tNAME:
                     if self.statename != StateName.sLOOP:
-                        category, item = token.split('.')
-                        if category not in self.current_dict:
-                            self.current_dict[category] = {}
-                        self.queue.put((category, item))
+                        self.queue.put(token)
 
                 case lex.tDATA:
                     if self.statename != StateName.sLOOP:
-                        category, item = self.queue.get()
-                        if category not in self.current_dict:
-                            self.current_dict[category] = {}
-                        self.current_dict[category][item] = token
-                    else:  ## ?
-                        handle_dataline(self)
+                        name = self.queue.get()
+                        self.current_dict[name] = token
 
                 case lex.tDATALINE_BEGIN:
                     data = handle_dataline(self)
 
                     if self.statename != StateName.sLOOP:
-                        category, item = self.queue.get()
-                        self.current_dict[category][item] = data
+                        name = self.queue.get()
+                        self.current_dict[name] = data
 
                 case lex.tLOOP:
                     self.set_state(StateName.sLOOP, self.loop_state)
-                    D = handle_loop(parser)
+                    D = handle_loop(self)
                     self.current_dict.update(D)
 
                 case lex.tLOOP_END:
