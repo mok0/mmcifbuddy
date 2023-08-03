@@ -1,5 +1,7 @@
+#     Copyright (C) 2023 Morten Kjeldgaard
 import sys
 import queue
+from pathlib import Path
 from loguru import logger
 from states import StateName, State, BeginState, LoopState
 from mmcifreader import mmciflexer as lex
@@ -7,7 +9,6 @@ from mmcifreader import mmciflexer as lex
 logger.remove()
 logger.add(sys.stdout, colorize=True,
            format="<green>{time:YYYY-MM-DD HH:mm}</green> <level>{message}</level>")
-
 
 
 def handle_dataline(parser) -> list:
@@ -62,13 +63,13 @@ def handle_loop(parser) -> dict:
 
 
 class Parser:
-    def __init__(self, fname) -> None:
+    def __init__(self) -> None:
 
         self.begin_state = BeginState(self)
         self.loop_state = LoopState(self)
         self.state = self.begin_state
         self.statename = StateName.sBEGIN
-        self.fname = fname
+        self.fname = None
         self.opened = False
         self.typ = None
         self.token = None
@@ -83,10 +84,11 @@ class Parser:
         self.statename = statename
 
 
-    def open(self):
+    def open(self, fname) -> None:
+        self.fname = fname
+
         # Check if file exists and can be opened without errors,
         # then call lexer to open file.
-
         if isinstance(self.fname, Path):
             self.fname = str(self.fname)
 
@@ -95,29 +97,37 @@ class Parser:
             raise FileNotFoundError
 
         status = lex.open_file(self.fname)
-        self.opened = True
         if not status:
             logger.error(f"Error opening file ({self.fname})")
             raise SystemExit
+        self.opened = True
 
 
-    def close(self):
+
+    def close(self) -> None:
         # Call lexer to close file
         lex.close_file()
         self.opened = False
 
-    def get_token(self):
 
+    def get_token(self) -> tuple[str,str]:
+        # Get next token from lexer
         if self.unget.empty():
             self.typ, self.token = lex.get_token()
         else:
             self.typ, self.token = self.unget.get()
-
-        #logger.debug(f"get_token, state is now {self.state}, typ is {lex.token_type_names[self.typ]}")
         return self.typ, self.token
 
 
+    def get_datablock_names(self) -> list:
+        return list(self.data_blocks.keys())
+
+
     def parse(self) -> dict:
+
+        if not self.opened:
+            logger.error("Input file not open for reading")
+            raise SystemExit
 
         typ = 1
         while typ:
@@ -171,5 +181,5 @@ class Parser:
                 case _:
                     logger.warning(f"Not handling {lex.token_type_names[typ]}, state: {parser.statename} ")
 
-        logger.info("Done parsing")
+        logger.info(f"Done parsing {self.get_datablock_names()}")
         return self.data_blocks

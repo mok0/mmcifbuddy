@@ -1,3 +1,5 @@
+#     Copyright (C) 2023 Morten Kjeldgaard
+
 from . import mmciflexer
 
 # Class that wraps mmciflexer in a file-like object,
@@ -8,7 +10,7 @@ class FileReader:
         self.file = file
         self.mode = 'r'
         self.closed = True
- 
+
     def __enter__(self):
         print(f'Opening the file {self.file}.')
         mmciflexer.open_file(self.file)
@@ -41,7 +43,7 @@ class FileReader:
         return mmciflexer.close_file()
 
 
-    
+
 
 
 if __name__ == "__main__":

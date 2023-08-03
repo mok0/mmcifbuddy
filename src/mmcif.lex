@@ -1,6 +1,6 @@
 /* -*- mode: bison -*- */
-
 %{
+    /* Copyright (C) 2023 Morten Kjeldgaard */
 
 #ifdef __APPLE__
 /* Disable certain compiler warnings that come from the lex generated code */

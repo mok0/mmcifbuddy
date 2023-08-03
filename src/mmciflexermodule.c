@@ -1,5 +1,5 @@
 /*
-  $Id: MMCIFlexer.c,v 1.2 2000/08/17 23:14:18 mok Exp $
+  Copyright (C) 2023 Morten Kjeldgaard
 */
 #include "mmciflexer.h" // use token defs from here
 #include "version.h"
@@ -24,7 +24,7 @@ static PyObject *MMCIFlexer_open_file(PyObject *self, PyObject *args)
      PyErr_SetString(PyExc_FileNotFoundError, "File not found");
     return NULL;
   }
-  
+
   mmcif_set_file(fp);
 
   /* The value of the fp pointer is returned */
@@ -54,7 +54,7 @@ static PyObject *MMCIFlexer_get_token(PyObject *self)
   if(flag) {
     value = mmcif_get_string();
   }
- 
+
  /* Treat doublequote and singlequote items as normal data */
   if (flag == tDOUBLE_QUOTE || flag == tSINGLE_QUOTE) {
     flag = tDATA;
@@ -69,10 +69,10 @@ static PyObject *MMCIFlexer_get_token(PyObject *self)
         return Py_BuildValue("(il)", tDATA, ii);
 
       case tFLOAT:
-      /* special case for tFLOAT data types, return tDATA token */  
+      /* special case for tFLOAT data types, return tDATA token */
         dd = strtod(value, NULL);
         return Py_BuildValue("(id)", tDATA, dd);
-  
+
       default:
         /* all other data types are returned as string values  */
         return Py_BuildValue("(is)", flag, value);
@@ -116,18 +116,18 @@ PyMODINIT_FUNC PyInit__mmciflexer()
 {
   PyObject *module = PyModule_Create(&_mmciflexermodule);
 
-  /* 
-    Add lexer constants by name, some of these are never returned by 
+  /*
+    Add lexer constants by name, some of these are never returned by
     parser but eaten in this module
   */
   PyModule_AddIntConstant(module, "tEND_OF_FILE", tEND_OF_FILE);
   PyModule_AddIntConstant(module, "tNAME", tNAME);
-  PyModule_AddIntConstant(module, "tLOOP", tLOOP); 
+  PyModule_AddIntConstant(module, "tLOOP", tLOOP);
   PyModule_AddIntConstant(module, "tLOOP_END", tLOOP_END);
   PyModule_AddIntConstant(module, "tID", tID);
-  PyModule_AddIntConstant(module, "tSEMICOLON", tSEMICOLON ); 
+  PyModule_AddIntConstant(module, "tSEMICOLON", tSEMICOLON );
   PyModule_AddIntConstant(module, "tDOUBLE_QUOTE", tDOUBLE_QUOTE);
-  PyModule_AddIntConstant(module, "tSINGLE_QUOTE", tSINGLE_QUOTE); 
+  PyModule_AddIntConstant(module, "tSINGLE_QUOTE", tSINGLE_QUOTE);
   PyModule_AddIntConstant(module, "tDATA", tDATA);
   PyModule_AddIntConstant(module, "tDATALINE_BEGIN", tDATALINE_BEGIN);
   PyModule_AddIntConstant(module, "tDATALINE", tDATALINE);
@@ -146,7 +146,7 @@ PyMODINIT_FUNC PyInit__mmciflexer()
   #ifdef COMPILE_TIME
   PyModule_AddObjectRef(module, "compile_time", PyUnicode_FromString(COMPILE_TIME));
   #endif
-  
+
 /* Add a list of token type names */
   PyObject* names = PyTuple_New(15);
   PyTuple_SetItem(names, (Py_ssize_t)tEND_OF_FILE, PyUnicode_FromString("tEND_OF_FILE"));
