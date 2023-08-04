@@ -1,14 +1,14 @@
 SHELL=/bin/sh
 
-all: mmciflexermodule.so 
+all: mmciflexermodule.so
 
 PHONY: mmciflexermodule.so
-mmciflexermodule.so: 
+mmciflexermodule.so:
 	cd src && $(MAKE)
 
 .PHONY: install
 install: clean-build-env
-	python3 updateversion.py mmcifreader/version.py
+	python3 updateversion.py mmcifreader/__init__.py
 	python3 -m build --wheel
 
 .PHONY: clean

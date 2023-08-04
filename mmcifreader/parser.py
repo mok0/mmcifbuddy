@@ -3,7 +3,7 @@ import sys
 import queue
 from pathlib import Path
 from loguru import logger
-from states import StateName, State, BeginState, LoopState
+from .states import StateName, State, BeginState, LoopState
 from mmcifreader import mmciflexer as lex
 
 logger.remove()
@@ -77,7 +77,7 @@ class Parser:
         self.unget = queue.SimpleQueue()
         self.data_blocks = {}
         self.current_dict = None
-
+        self.simple = False
 
     def set_state(self, statename: StateName, state: State) -> None:
         self.state = state
@@ -165,7 +165,7 @@ class Parser:
 
                 case lex.tLOOP:
                     self.set_state(StateName.sLOOP, self.loop_state)
-                    D = handle_loop(parser)
+                    D = handle_loop(self)
                     self.current_dict.update(D)
 
                 case lex.tLOOP_END:
@@ -179,7 +179,7 @@ class Parser:
                     break
 
                 case _:
-                    logger.warning(f"Not handling {lex.token_type_names[typ]}, state: {parser.statename} ")
+                    logger.warning(f"Not handling {lex.token_type_names[typ]}, state: {self.statename} ")
 
         logger.info(f"Done parsing {self.get_datablock_names()}")
         return self.data_blocks

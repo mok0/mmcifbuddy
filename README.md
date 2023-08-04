@@ -1,22 +1,61 @@
-# Module to read mmCIF files
+# Module to read PDBx/mmCIF files
 
-Yeah.
+`Mmcifreader` is a Python module for very fast reading of files in the
+[PDBx/mmCIF
+format](https://mmcif.wwpdb.org/docs/tutorials/mechanics/pdbx-mmcif-syntax.html)
+that is standard in macromolecular crystallography and structural biology.
 
+;; somethin about PDB
+
+
+An mmCIF file consists of _categories_ of information in the form of
+tables and keyword-value pairs.
+
+elationships between common data items (e.g. atom and residue
+identifiers) are explicitly documented within the [PDBx Exchange
+Dictionary](https://mmcif.wwpdb.org/dictionaries/mmcif_pdbx_v50.dic/Index/)
+which itself is an mmCIF file and can be used to check the validity of
+any PDB entry.
+
+OBS! mmcifreader is FAST
 
 ## Examples
+
+```
+data_4XB6
+#
+_entry.id   4XB6
+#
+_audit_conform.dict_name       mmcif_pdbx.dic
+_audit_conform.dict_version    5.279
+...
+```
+
+Two parsers in each their submodule, `parser` and `flat_parser`.
+
+
+
+
+
 
 In the first example, let's read an mmCIF file into IPython:
 
 ```py
 
-In [1]: import mmcifreader as mr
-In [2]: data = mr.parse('data/4af1.cif')
-In [4]: print(data['_entry.id'])
-4AF1
+In [1]: from mmcifreader.parser import Parser
 
+In [2]: myparser = Parser()
+
+In [3]: myparser.open('data/4af1.cif')
+
+In [4]: data = myparser.parse()
+2023-08-04 09:33 Done parsing ['data_4AF1']
+
+In [5]: print(data['data_4AF1']['_entry']['id'])
+4AF1
 ```
 
-Now the mmCIF file is in memory as an ordinary dictionary, that you can do with 
+Now the mmCIF file is in memory as an ordinary dictionary, that you can do with
 what you want. For example, to see what coordinates are stored in the file:
 
 ```py
@@ -50,7 +89,7 @@ def main() -> None:
     clock.lap()
 
     for i, v in enumerate(Data['_atom_site.group_PDB']):
-       print(v, 
+       print(v,
             Data['_atom_site.group_PDB'][i],
             Data['_atom_site.id'][i],
             Data['_atom_site.label_atom_id'][i],
@@ -97,7 +136,7 @@ Out[12]:
 [5 rows x 21 columns]
 
 
-
+#### PANDAS to NUMPY!
 
 
 In [13]: import polars as pl
@@ -119,5 +158,15 @@ shape: (5, 21)
 │ ATOM      ┆ 5   ┆ C           ┆ CB            ┆ … ┆ VAL          ┆ A            ┆ CB           ┆ 1                  │
 └───────────┴─────┴─────────────┴───────────────┴───┴──────────────┴──────────────┴──────────────┴────────────────────┘
 
+```
+## Example: Find secondary structure
+
+## Example: Extract Amino Acid sequence
+
+
+## Direct access to lexer
+
+```
+In [12]: from mmcifreader import mmciflexer as lex
 
 ```
