@@ -13,7 +13,7 @@ class FileReader:
 
     def __enter__(self):
         print(f'Opening the file {self.file}.')
-        mmciflexer.open_file(self.file)
+        mmciflexer.fopen(self.file)
         self.closed = False
         return self
 
@@ -21,7 +21,7 @@ class FileReader:
         print(f'Closing the file {self.file}.')
         if not self.closed:
             pass
-            status = mmciflexer.close_file()
+            status = mmciflexer.fclose()
         return False
 
     def __next__(self):
@@ -42,11 +42,3 @@ class FileReader:
     def close(self):
         return mmciflexer.close_file()
 
-
-
-
-
-if __name__ == "__main__":
-    with FileReader('../4af1.cif') as f:
-        for s in f:
-            print(s)

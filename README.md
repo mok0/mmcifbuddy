@@ -1,4 +1,4 @@
-# Module to read PDBx/mmCIF files
+# Python Module to Read and Parse PDBx/mmCIF files
 
 `Mmcifreader` is a Python module for very fast reading of files in the
 [PDBx/mmCIF
@@ -20,6 +20,11 @@ any PDB entry.
 OBS! mmcifreader is FAST
 
 ## Examples
+
+The first line of an mmCIF file always begins with `data_*` which
+signals the beginning of a _datablock_. There can be multiple
+datablocks in a single file, each with a unique name. one example is
+the entry XXXXXXX.
 
 ```
 data_4XB6
@@ -163,10 +168,23 @@ shape: (5, 21)
 
 ## Example: Extract Amino Acid sequence
 
+## Example: Anisotropic temperature factors
+
+1ap2 barnase
 
 ## Direct access to lexer
 
 ```
 In [12]: from mmcifreader import mmciflexer as lex
+
+```
+
+
+```py
+from mmcifreader.filereader import FileReader
+
+with FileReader('../4af1.cif') as fr:
+    for s in fr:
+        print(s)
 
 ```

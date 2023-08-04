@@ -70,6 +70,7 @@ class Parser:
         self.state = self.begin_state
         self.statename = StateName.sBEGIN
         self.fname = None
+        self.fp = None
         self.opened = False
         self.typ = None
         self.token = None
@@ -84,7 +85,8 @@ class Parser:
         self.statename = statename
 
 
-    def open(self, fname) -> None:
+    def fopen(self, fname) -> None:
+        # Open named file in C extension 
         self.fname = fname
 
         # Check if file exists and can be opened without errors,
@@ -96,12 +98,30 @@ class Parser:
             logger.error("File not found")
             raise FileNotFoundError
 
-        status = lex.open_file(self.fname)
+        status = lex.fopen(self.fname)
         if not status:
             logger.error(f"Error opening file ({self.fname})")
             raise SystemExit
         self.opened = True
 
+
+    def open(self, fp) -> None:
+            # File already opened in Python
+            self.fp = fp
+
+            if not hasattr(fp, 'fileno'):
+                logger.error("Expecting Python file object")
+                raise TypeError()
+
+            if fp.closed:
+                logger.error("Expecting open file object")
+                raise RuntimeError()
+
+            status = lex.open(self.fp)
+            if not status:
+                logger.error(f"Error opening file ({self.fname})")
+                raise SystemExit
+            self.opened = True
 
 
     def close(self) -> None:
