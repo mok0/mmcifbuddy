@@ -1,3 +1,3 @@
-#define GIT_COMMIT "ce2db05"
-#define GIT_BRANCH "file-object"
-#define COMPILE_TIME "2023-08-04 14:38:24 UTC"
+#define GIT_COMMIT "c28daac"
+#define GIT_BRANCH "devel"
+#define COMPILE_TIME "2023-08-10 08:59:15 UTC"

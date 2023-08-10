@@ -18,19 +18,22 @@ LOCAL_INSTALL_DIR := ../mmcifreader/mmciflexer
 
 
 .PHONY: all
-all: $(MMCIFLEXERMODULE) test_mmcif_lex 
+all: $(MMCIFLEXERMODULE) test_mmcif_lex
 
 install: all
 	install $(MMCIFLEXERMODULE) $(LOCAL_INSTALL_DIR)
 
-$(MMCIFLEXERMODULE): mmciflexermodule.o lex.mmcif.o
+$(MMCIFLEXERMODULE): mmciflexermodule.o lex.mmcif.o sneaky_fopen.o
 	clang $(LDSHARED) $^ -o $@
 
 mmciflexermodule.o: mmciflexermodule.c mmciflexer.h
-	python3 create_version_h.py 
+	python3 create_version_h.py
 	$(CC) -c $(PY_CFLAGS) -I$(INCLUDEPY) $< -o $@
 
-lex.mmcif.o: lex.mmcif.c 
+lex.mmcif.o: lex.mmcif.c
+	$(CC) -c $(PY_CFLAGS) $< -o $@
+
+sneaky_fopen.o: sneaky_fopen.c
 	$(CC) -c $(PY_CFLAGS) $< -o $@
 
 lex.mmcif.c: mmcif.lex mmciflexer.h

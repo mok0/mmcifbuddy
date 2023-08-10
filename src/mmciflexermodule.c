@@ -1,10 +1,12 @@
 /*
   Copyright (C) 2023 Morten Kjeldgaard
 */
+#include <stdio.h>  // For definition of (FILE *)
 #include "mmciflexer.h" // use token defs from here
 #include "version.h"
 #include <Python.h>
 
+FILE *sneaky_fopen(const char *path, const char *mode);
 int mmcif_get_token();
 char *mmcif_get_string(void);
 void mmcif_set_file(FILE *fp);
@@ -20,7 +22,7 @@ static PyObject *MMCIFlexer_open_with_filename(PyObject *self, PyObject *args)
     return NULL;
   }
 
-  fp = fopen(filename, "r");
+  fp = sneaky_fopen(filename, "r");
   if (!fp) {
     PyErr_SetString(PyExc_FileNotFoundError, "File not found");
     return NULL;
@@ -36,21 +38,17 @@ static PyObject *MMCIFlexer_open_with_filename(PyObject *self, PyObject *args)
 /* Pass an open file object from Python to C extension code. */
 static PyObject *MMCIFlexer_open_with_fd(PyObject *self, PyObject *args)
 {
-  
-  
   PyObject *fileobj = NULL;
 
   if (!PyArg_ParseTuple(args, "O", &fileobj)) {
     return NULL;
   }
 
-
   /* From an open Python file object, get the file descriptor */
   int fd = PyObject_AsFileDescriptor(fileobj);
   if (fd < 0) {
     return NULL;
   }
-
 
   FILE* fp = fdopen(fd, "r");   /* lex expects a file pointer structure */
   close_file = 0; /* this file is closed in Python */
