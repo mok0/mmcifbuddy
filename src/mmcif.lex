@@ -62,8 +62,10 @@ semicolon_value		^;(.*\n)
                     }
 
 {name}              {
-                        return tNAME;  /* e.g. _entity.id */
-                    }
+                        if(in_loop == 1)
+                            {in_loop = 2;};  /* signal that name is found inside loop */
+                        return tNAME;       /* e.g. _entity.id */
+}
 
 {loop}              {
                         in_loop = 1;
