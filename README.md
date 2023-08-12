@@ -1,11 +1,13 @@
 # Python Module to Read and Parse PDBx/mmCIF files
 
-`Mmcifreader` is a Python module for very fast reading of files in the
-[PDBx/mmCIF
-format](https://mmcif.wwpdb.org/docs/tutorials/mechanics/pdbx-mmcif-syntax.html)
+`Mmcifreader` is a light weigth and very fast Python module for
+reading of files in the [PDBx/mmCIF][1] format
+
+
 that is standard in macromolecular crystallography and structural biology.
 
-;; somethin about PDB
+[//]: # (something about PDB and an example of a markdown
+comment which is actually a link lol)
 
 
 An mmCIF file consists of _categories_ of information in the form of
@@ -40,9 +42,6 @@ Two parsers in each their submodule, `parser` and `flat_parser`.
 
 
 
-
-
-
 In the first example, let's read an mmCIF file into IPython:
 
 ```py
@@ -51,21 +50,22 @@ In [1]: from mmcifreader.parser import Parser
 
 In [2]: myparser = Parser()
 
-In [3]: myparser.open('data/4af1.cif')
+In [3]: myparser.openf('data/4af1.cif')
 
 In [4]: data = myparser.parse()
 2023-08-04 09:33 Done parsing ['data_4AF1']
+In [5]: parser.close()
 
-In [5]: print(data['data_4AF1']['_entry']['id'])
+In [6]: print(data['data_4AF1']['_entry']['id'])
 4AF1
 ```
 
 Now the mmCIF file is in memory as an ordinary dictionary, that you can do with
 what you want. For example, to see what coordinates are stored in the file:
 
-```py
+```
 _entity_name_com.name
-``````
+```
 
 
 
@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
 
 
-```
+```py
 
 In [9]: import pandas as pd
 In [10]: df = pd.DataFrame.from_dict(D['_atom_site'])
@@ -164,6 +164,7 @@ shape: (5, 21)
 └───────────┴─────┴─────────────┴───────────────┴───┴──────────────┴──────────────┴──────────────┴────────────────────┘
 
 ```
+
 ## Example: Find secondary structure
 
 ## Example: Extract Amino Acid sequence
@@ -188,3 +189,6 @@ with FileReader('../4af1.cif') as fr:
         print(s)
 
 ```
+
+
+[1]: https://mmcif.wwpdb.org/docs/tutorials/mechanics/pdbx-mmcif-syntax.html
