@@ -5,10 +5,11 @@ class TimerError(Exception):
 
 
 class Timer:
-    def __init__(self):
+    def __init__(self, verbose=True):
         self._start_time = None
         self.elapsed_time = 0
         self.lap_time = 0
+        self.verbose = verbose
 
 
     def start(self):
@@ -17,7 +18,7 @@ class Timer:
             raise TimerError("Timer is running. Use .stop() to stop it")
         self._start_time = time.perf_counter()
         self.lap_time = time.perf_counter()
-
+        self.elapsed_time = 0
 
     def lap(self):
         """Take a lap time"""
@@ -27,7 +28,7 @@ class Timer:
         self.lap_time = time.perf_counter() - self.lap_time
         print(f"Elapsed time: {self.lap_time:0.4f} seconds")
         self.lap_time = time.perf_counter()
-       
+
 
     def stop(self):
         """Stop the timer, and report the elapsed time"""
@@ -37,4 +38,5 @@ class Timer:
         ##elapsed_time = time.perf_counter() - self._start_time
         self.elapsed_time = time.perf_counter() - self._start_time
         self._start_time = None
-        print(f"Elapsed time: {self.elapsed_time:0.4f} seconds")
+        if self.verbose:
+            print(f"Elapsed time: {self.elapsed_time:0.4f} seconds")

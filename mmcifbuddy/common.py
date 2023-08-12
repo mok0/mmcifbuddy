@@ -1,4 +1,4 @@
-from mmcifreader import mmciflexer as lex
+from mmcifbuddy import mmciflexer as lex
 
 def _handle_dataline(parser) -> list:
     # Handle the datalines

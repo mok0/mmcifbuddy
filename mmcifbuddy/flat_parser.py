@@ -5,12 +5,11 @@ from pathlib import Path
 from loguru import logger
 from .states import StateName, State, BeginState, LoopState
 from .common import _handle_dataline
-from mmcifreader import mmciflexer as lex
+from mmcifbuddy import mmciflexer as lex
 
 logger.remove()
 logger.add(sys.stdout, colorize=True,
            format="<green>{time:YYYY-MM-DD HH:mm}</green> <level>{message}</level>")
-
 
 
 def _handle_loop(parser) -> dict:
@@ -84,7 +83,8 @@ class Parser:
        consists of dictionaries of categories. For a flat parser,
        use flat_parser instead.
     """
-    def __init__(self) -> None:
+    def __init__(self, verbose=True) -> None:
+        self.verbose = verbose
         self.begin_state = BeginState(self)
         self.loop_state = LoopState(self)
         self.state = self.begin_state
@@ -111,7 +111,6 @@ class Parser:
         self.data_blocks = {}
         self.current_dict = None
 
-
     def _set_state(self, statename: StateName, state: State) -> None:
         """Set internal parser state"""
         self.state = state
@@ -136,7 +135,6 @@ class Parser:
             raise SystemExit
         self.opened = True
 
-
     def open(self, fp) -> None:
         """Define file already opened in Python."""
         self.fp = fp
@@ -153,15 +151,13 @@ class Parser:
         if not status:
             logger.error(f"Error opening file ({self.fname})")
             raise SystemExit
-
         self.opened = True
 
     def fclose(self) -> None:
         """Call lexer to close file. Reset parser object"""
         if self.opened:
             lex.close_file()
-        self._reset(self)
-
+        self._reset()
 
     def _get_token(self) -> tuple[str,str]:
         """Internal method to get next token from lexer"""
@@ -170,7 +166,6 @@ class Parser:
         else:
             self.typ, self.token = self.unget.get()
         return self.typ, self.token
-
 
     def get_datablock_names(self) -> list:
         """Return list of datablock names found in file"""
@@ -183,12 +178,13 @@ class Parser:
         automatically when the fopen() method is used in which case
         there is no need to call reset()
         """
-        self._reset(self)
-
+        self._reset()
 
     def parse(self) -> dict:
-        """Parse an mmCIF file. Returns a dict indexed by
-        category.item keys."""
+        """
+        Parse an mmCIF file. Returns a dict indexed by
+        category.item keys.
+        """
 
         if not self.opened:
             logger.error("Input file not open for reading")
@@ -239,5 +235,6 @@ class Parser:
                 case _:
                     logger.warning(f"Not handling {lex.token_type_names[typ]}, state: {self.statename} ")
 
-        logger.info(f"Done parsing {self.get_datablock_names()}")
+        if self.verbose:
+            logger.info(f"Done parsing {self.get_datablock_names()}")
         return self.data_blocks

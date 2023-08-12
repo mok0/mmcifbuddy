@@ -3,9 +3,9 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mmcifreader"
+name = "mmcifbuddy"
 authors = [{name = "Morten Kjeldgaard", email = "mortenkjeldgaard@gmail.com"}]
-description = "Python module to parse mmCIF file"
+description = "Fast and easy to use Python module to parse mmCIF files"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {file="LICENSE"}
@@ -21,7 +21,7 @@ dynamic = ["version"]
 dependencies = ["loguru"]
 
 [tool.setuptools]
-packages =  ["mmcifreader", "mmcifreader.mmciflexer"]
+packages =  ["mmcifbuddy", "mmcifbuddy.mmciflexer"]
 
 [tool.setuptools.dynamic]
-version = {attr = "mmcifreader.__version__"}
+version = {attr = "mmcifbuddy.__version__"}

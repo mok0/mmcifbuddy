@@ -1,7 +1,7 @@
-# Python Module to Read and Parse PDBx/mmCIF files
+# Mmcifbuddy - A Python Module to Read and Parse PDBx/mmCIF files
 
-`Mmcifreader` is a light weigth and very fast Python module for
-reading of files in the [PDBx/mmCIF][1] format
+`Mmcifbuddy` is a lightweigth, easy to use and very fast Python module
+for reading of files in the [PDBx/mmCIF][1] format
 
 
 that is standard in macromolecular crystallography and structural biology.
@@ -13,13 +13,13 @@ comment which is actually a link lol)
 An mmCIF file consists of _categories_ of information in the form of
 tables and keyword-value pairs.
 
-elationships between common data items (e.g. atom and residue
+The relationships between common data items (e.g. atom and residue
 identifiers) are explicitly documented within the [PDBx Exchange
 Dictionary](https://mmcif.wwpdb.org/dictionaries/mmcif_pdbx_v50.dic/Index/)
 which itself is an mmCIF file and can be used to check the validity of
 any PDB entry.
 
-OBS! mmcifreader is FAST
+OBS! mmcifbuddy is FAST
 
 ## Examples
 
@@ -27,6 +27,10 @@ The first line of an mmCIF file always begins with `data_*` which
 signals the beginning of a _datablock_. There can be multiple
 datablocks in a single file, each with a unique name. one example is
 the entry XXXXXXX.
+
+
+207540 entries checked 2023-08-12
+
 
 ```
 data_4XB6
@@ -46,7 +50,7 @@ In the first example, let's read an mmCIF file into IPython:
 
 ```py
 
-In [1]: from mmcifreader.parser import Parser
+In [1]: from mmcifbuddy.parser import Parser
 
 In [2]: myparser = Parser()
 
@@ -73,7 +77,7 @@ _entity_name_com.name
 ```py
 import sys
 from pathlib import Path
-import mmcifreader as mr
+import mmcifbuddy as mr
 
 
 def main() -> None:
@@ -176,13 +180,13 @@ shape: (5, 21)
 ## Direct access to lexer
 
 ```
-In [12]: from mmcifreader import mmciflexer as lex
+In [12]: from mmcifbuddy import mmciflexer as lex
 
 ```
 
 
 ```py
-from mmcifreader.filereader import FileReader
+from mmcifbuddy.filereader import FileReader
 
 with FileReader('../4af1.cif') as fr:
     for s in fr:

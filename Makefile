@@ -7,8 +7,8 @@ mmciflexermodule.so:
 	cd src && $(MAKE)
 
 .PHONY: install
-install: clean-build-env
-	python3 updateversion.py mmcifreader/__init__.py
+wheel: clean-build-env
+	python3 updateversion.py mmcifbuddy/__init__.py
 	python3 -m build --wheel
 
 .PHONY: clean
