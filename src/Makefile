@@ -9,7 +9,7 @@ LDSHARED := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_var
 #EXT_SUFFIX = .cpython-311-darwin.so
 EXT_SUFFIX := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['EXT_SUFFIX'])")
 MMCIFLEXERMODULE := _mmciflexer$(EXT_SUFFIX)
-LOCAL_INSTALL_DIR := ../mmcifreader/mmciflexer
+LOCAL_INSTALL_DIR := ../mmcifbuddy/mmciflexer
 
 #GIT_HASH = $(shell git rev-parse --short HEAD)
 #COMPILE_TIME = $(shell date -u +'%Y-%m-%d %H:%M:%S UTC')

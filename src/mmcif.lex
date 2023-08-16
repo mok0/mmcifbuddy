@@ -1,4 +1,4 @@
-/* -*- mode: bison -*- */
+/* -*- mode: text -*- */
 %{
     /* Copyright (C) 2023 Morten Kjeldgaard */
 
@@ -38,13 +38,12 @@ loop			[Ll][Oo][Oo][Pp]_
 data			[Dd][Aa][Tt][Aa]_[^ \t\n]+
 integer         -?[0-9]+
 float          -?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
-free_value		[^ \t\n]+
+word           		[^ \t\n]+
 single_quote_value	'[^'\n]*'
 double_quote_value	\"[^"\n]*\"
 semicolon_value		^;(.*\n)
 
 %%
-
 {data}              {
                         in_loop = 0;
                         return tID;  /* data_<pdbid> at start of file */
@@ -117,7 +116,7 @@ semicolon_value		^;(.*\n)
 
 {float}      { return tFLOAT;    /* floating point token, returned as a string */ }
 
-{free_value} { return tDATA;     /* string token value */ }
+{word}       { return tDATA;     /* string token value */ }
 
 [ \t\n]+					     /* ignore whitespace */
 
@@ -166,17 +165,17 @@ char *shoveleft (char *str)
 
 
 /*
-    s t r t r i m
-   Trim spaces and junk off the end of a character string
-   mk 950404, 2023-08-01
+  s t r t r i m
+  Trim spaces and junk off the end of a character string
+  mk 950404, 2023-08-01
 */
 
 int strtrim (char *str, int length) {
-  register char *s;
+    register char *s;
 
-  s = str + length - 1;
-  while (isspace(*--s) && s > str)  /* trim spaces off end */
-    ;
-  *++s = '\0';
-  return s-str; // return new length
+    s = str + length - 1;
+    while (isspace(*--s) && s > str)  /* trim spaces off end */
+        ;
+    *++s = '\0';
+    return s-str; // return new length
 }

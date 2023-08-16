@@ -156,8 +156,12 @@ class Parser:
     def fclose(self) -> None:
         """Call lexer to close file. Reset parser object"""
         if self.opened:
-            lex.close_file()
+            lex.fclose()
         self._reset()
+
+    def _set_debug_mode(self, value) -> int:
+        """Set the internal debug mode in the lexer"""
+        return lex.set_debug_mode(value)
 
     def _get_token(self) -> tuple[str,str]:
         """Internal method to get next token from lexer"""
