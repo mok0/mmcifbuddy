@@ -11,6 +11,7 @@ FILE *sneaky_fopen(const char *path, const char *mode);
 int mmcif_get_token();
 char *mmcif_get_string(void);
 void mmcif_set_file(FILE *fp);
+int mmcif_get_lineno(void);
 
 FILE *fp;
 int close_file = 1;
@@ -107,7 +108,8 @@ static PyObject *lexer_get_token(PyObject *self)
   }
 
   if (debug) {
-    printf("[%d] %s\n", flag, value);
+    int lineno = mmcif_get_lineno();
+    printf("[%d/%d] %s\n", lineno, flag, value);
   }
 
   /* Treat doublequote and singlequote items as normal data */
