@@ -223,7 +223,7 @@ PyMODINIT_FUNC PyInit__mmciflexer()
 #endif
 
   /* Add a list of token type names */
-  PyObject* names = PyTuple_New(15);
+  PyObject* names = PyTuple_New(18);
   PyTuple_SetItem(names, (Py_ssize_t)tEND_OF_FILE, PyUnicode_FromString("tEND_OF_FILE"));
   PyTuple_SetItem(names, (Py_ssize_t)tNAME, PyUnicode_FromString("tNAME"));
   PyTuple_SetItem(names, (Py_ssize_t)tLOOP, PyUnicode_FromString("tLOOP"));
@@ -239,6 +239,9 @@ PyMODINIT_FUNC PyInit__mmciflexer()
   PyTuple_SetItem(names, (Py_ssize_t)tCOMMENT, PyUnicode_FromString("tCOMMENT"));
   PyTuple_SetItem(names, (Py_ssize_t)tINT, PyUnicode_FromString("tINT"));
   PyTuple_SetItem(names, (Py_ssize_t)tFLOAT, PyUnicode_FromString("tFLOAT"));
+  PyTuple_SetItem(names, (Py_ssize_t)tFLOAT, PyUnicode_FromString("tSAVE"));
+  PyTuple_SetItem(names, (Py_ssize_t)tFLOAT, PyUnicode_FromString("tCATEGORY"));
+  PyTuple_SetItem(names, (Py_ssize_t)tFLOAT, PyUnicode_FromString("tITEM"));
 
   PyModule_AddObjectRef(module, "token_type_names", names);
   Py_DECREF(names);
