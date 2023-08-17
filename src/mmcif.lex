@@ -18,26 +18,22 @@ int strtrim (char *str, int length);
 
 static int in_loop;
 
-/*
-float           -?[0-9]+\.[0-9]*
-also works because exponents are not used in mmcif files afaik
-*/
 %}
 
 %option never-interactive
 %option prefix="mmcif"
-
 %option noyywrap
 %option nounput
+%option yylineno
 
 %x sSEMICOLON
 
 comment			#.*\n
 name			_[^ \t\n]+
-loop			[Ll][Oo][Oo][Pp]_
-data			[Dd][Aa][Tt][Aa]_[^ \t\n]+
-integer         -?[0-9]+
-float          -?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
+loop			^[:blank:]*[Ll][Oo][Oo][Pp]_
+data			^[Dd][Aa][Tt][Aa]_[^ \t\n]+
+integer                 -?[0-9]+
+float                   -?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
 word           		[^ \t\n]+
 single_quote_value	'[^'\n]*'
 double_quote_value	\"[^"\n]*\"
@@ -130,14 +126,29 @@ void mmcif_set_file(FILE *fp)
 }
 
 
+/*
+   Advance to and return next token value
+*/
+
 int mmcif_get_token()
 {
     return yylex();
 }
 
+/*
+   Return latest token string.
+*/
 char *mmcif_get_string(void)
 {
     return yytext;
+}
+
+/*
+   Get the current line number, maintained by the lexer
+*/
+int mmcif_get_lineno(void)
+{
+    return yylineno;
 }
 
 /*
