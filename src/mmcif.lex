@@ -16,7 +16,7 @@
 char *shoveleft (char *str);
 int strtrim (char *str, int length);
 
-static int in_loop;
+static int in_loop, in_save;
 
 %}
 
@@ -29,19 +29,21 @@ static int in_loop;
 %x sSEMICOLON
 
 comment			#.*\n
+save_item               save__[^ \t\n]+
+save_category           save_{1}([^_ \t\n]){1}[^ \t\n]+
+save_                   ^save_
+loop			^[:blank:]*loop_
+ident			^[Dd][Aa][Tt][Aa]_[^ \t\n]+
 name			_[^ \t\n]+
-loop			^[:blank:]*[Ll][Oo][Oo][Pp]_
-data			^[Dd][Aa][Tt][Aa]_[^ \t\n]+
 integer                 -?[0-9]+
 float                   -?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
 word           		[^ \t\n]+
 single_quote_value	'[^'\n]*'
 double_quote_value	\"[^"\n]*\"
 semicolon_value		^;(.*\n)
-
 %%
-{data}              {
-                        in_loop = 0;
+{ident}              {
+                        in_loop = 0; in_save = 0;
                         return tID;  /* data_<pdbid> at start of file */
                     }
 
@@ -67,6 +69,9 @@ semicolon_value		^;(.*\n)
                         return tLOOP;
                     }
 
+{save_item}         { in_save = 2;  return tSAVE_ITEM;  /* save__{word}+ */ }
+{save_category}     { in_save = 1; return tSAVE_CATEGORY;  }
+{save_}             { in_save = 0; return tSAVE_END;  }
 
 {semicolon_value}   {
                         BEGIN(sSEMICOLON);   /* Enter semicolon state */
