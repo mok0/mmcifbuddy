@@ -5,7 +5,7 @@
 char *return_type_name[] = {"tEND_OF_FILE","tNAME","tLOOP", "tLOOP_END",
                             "tID","tSEMICOLON", "tDOUBLE_QUOTE", "tSINGLE_QUOTE", "tDATA",
                             "tDATALINE_BEGIN", "tDATALINE", "tDATALINE_END", "tCOMMENT",
-                            "tINT", "tFLOAT", "tSAVE", "tCATEGORY", "tITEM"};
+                            "tINT", "tFLOAT", "tSAVE_CATEGORY", "tSAVE_ITEM", "tSAVE_END"};
 
 int mmcif_get_token();
 char *mmcif_get_string(void);
