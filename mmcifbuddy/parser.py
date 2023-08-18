@@ -1,11 +1,13 @@
 #     Copyright (C) 2023 Morten Kjeldgaard
+# pylint: disable=too-many-instance-attributes, line-too-long,
+# pylint: disable=protected-access, no-member
 import sys
 import queue
 from pathlib import Path
 from loguru import logger
+from mmcifbuddy import mmciflexer as lex
 from .states import StateName, State, BeginState, LoopState
 from .common import _handle_dataline
-from mmcifbuddy import mmciflexer as lex
 
 logger.remove()
 logger.add(sys.stdout, colorize=True,
