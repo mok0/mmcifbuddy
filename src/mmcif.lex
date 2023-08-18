@@ -38,11 +38,13 @@ name			_[^ \t\n]+
 integer                 -?[0-9]+
 float                   -?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
 word           		[^ \t\n]+
-single_quote_value	'[^'\n]*'
-double_quote_value	\"[^"\n]*\"
-semicolon_value		^;(.*\n)
+single_quote            '[^'\n]*'
+double_quote            \"[^"\n]*\"
+semicolon		^;(.*\n)
+
 %%
-{ident}              {
+
+{ident}             {
                         in_loop = 0; in_save = 0;
                         return tID;  /* data_<pdbid> at start of file */
                     }
@@ -62,7 +64,7 @@ semicolon_value		^;(.*\n)
                         if(in_loop == 1)
                             {in_loop = 2;};  /* signal that name is found inside loop */
                         return tNAME;       /* e.g. _entity.id */
-}
+                    }
 
 {loop}              {
                         in_loop = 1;
@@ -73,7 +75,7 @@ semicolon_value		^;(.*\n)
 {save_category}     { in_save = 1; return tSAVE_CATEGORY;  }
 {save_}             { in_save = 0; return tSAVE_END;  }
 
-{semicolon_value}   {
+{semicolon}         {
                         BEGIN(sSEMICOLON);   /* Enter semicolon state */
                         yytext[0] = ' ';     /* There is a leading semicolon in the first string */
                         shoveleft(yytext);   /* get rid of it */
@@ -95,7 +97,7 @@ semicolon_value		^;(.*\n)
                     }
 
 
-{double_quote_value} {
+{double_quote}      {
                             if (yytext[0] == '\"') {  /* get rid of double quote characters */
                                 yytext[0] = ' ';
                                 shoveleft(yytext);
@@ -104,7 +106,7 @@ semicolon_value		^;(.*\n)
                             return tDOUBLE_QUOTE;
                     }
 
-{single_quote_value} {   /* 'value' */
+{single_quote}      {
                             if (yytext[0] == '\'') {  /* get rid of single quote characters */
                                 yytext[0] = ' ';
                                 shoveleft(yytext);
@@ -113,18 +115,21 @@ semicolon_value		^;(.*\n)
                             return tSINGLE_QUOTE;
                     }
 
-{integer}    { return tINT;      /* integer token, returned as a string */   }
+{integer}           { return tINT;      /* integer token, returned as a string */   }
 
-{float}      { return tFLOAT;    /* floating point token, returned as a string */ }
+{float}             { return tFLOAT;    /* floating point token, returned as a string */ }
 
-{word}       { return tDATA;     /* string token value */ }
+{word}              { return tDATA;     /* string token value */ }
 
 [ \t\n]+					     /* ignore whitespace */
 
-<<EOF>>      { return 0; }
+<<EOF>>             { return 0; }
 
 %%
 
+/*
+   Set the yyin FILE pointer to the file to be lexed
+*/
 void mmcif_set_file(FILE *fp)
 {
     yyin=fp;
