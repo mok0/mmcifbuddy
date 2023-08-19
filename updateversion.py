@@ -18,12 +18,13 @@ logger.add(sys.stdout, colorize=True,
 
 def get_version(path) -> str:
 
+    pat = "__version__\s?="
     versionfound = False
     with open(path) as inf:
         data = 'start'
         while data:
             data = inf.readline()
-            if '__version__' in data:
+            if re.search(pat, data):
                 delim = '"' if '"' in data else "'"
                 vers = data.split(delim)[1]
                 versionfound = True
