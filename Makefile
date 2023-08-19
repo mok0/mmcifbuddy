@@ -3,8 +3,9 @@ SHELL=/bin/sh
 all: mmciflexermodule.so
 
 PHONY: mmciflexermodule.so
+
 mmciflexermodule.so:
-	cd src && $(MAKE)
+	cd src && $(MAKE) install
 
 .PHONY: install
 wheel: clean-build-env
