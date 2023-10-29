@@ -27,9 +27,8 @@ tables and keyword-value pairs.
 
 The relationships between common data items (e.g. atom and residue
 identifiers) are explicitly documented within the [PDBx Exchange
-Dictionary][dictionary]
-which itself is an mmCIF file and can be used to check the validity of
-any PDB entry.
+Dictionary][dictionary] which itself is an mmCIF file and can be used
+to check the validity of any PDB entry.
 
 OBS! mmcifbuddy is FAST
 
@@ -62,7 +61,7 @@ it has the following public facing methods:
   parser, use flat_parser instead.
 
 The first line in an mmCIF file is a _datablock_ name, consisting of
-the string "data_" and followed by the PDB ident code, for example
+the string "data\_" followed by the PDB ident code, for example
 "data_1ttt". The mmCIF definition specifies that there can be several
 datablocks in a single file. So the first level of the dictionary
 returned by the parser is indexed by datablock name. I have not been
