@@ -234,6 +234,10 @@ class Parser:
                     #self.fclose()
                     break
 
+                case lex.tSAVE_CATEGORY | lex.tSAVE_ITEM | lex.tSAVE_END:
+                    logger.critical("Can't handle mmcif dictionaries")
+                    raise SystemExit
+
                 case _:
                     logger.warning(f"Not handling {lex.token_type_names[typ]}, state: {self.statename} ")
 
