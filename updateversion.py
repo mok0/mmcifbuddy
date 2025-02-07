@@ -12,13 +12,13 @@ logger.remove()
 logger.add(sys.stdout, colorize=True,
            format="<green>{time:YYYY-MM-DD HH:mm}</green> <level>{message}</level>")
 
-
 # Update a version file with a version number of the form
 # major.minor.micro. No letters allowed.
 
+
 def get_version(path) -> str:
 
-    pat = "__version__\s?="
+    pat = r"__version__\s?="
     versionfound = False
     with open(path) as inf:
         data = 'start'
@@ -31,7 +31,7 @@ def get_version(path) -> str:
     if not versionfound:
         logger.error(f"Unable to find version string in file {path}")
         raise SystemExit()
-    if not re.match("\d+\.\d+\.\d+$", vers):
+    if not re.match(r"\d+\.\d+\.\d+$", vers):
         logger.error(f"Version string in file {path.stem} malformed: {vers}")
         raise SystemExit()
 
@@ -39,7 +39,7 @@ def get_version(path) -> str:
 
 
 def check_version_format(version):
-    return re.match("\d+\.\d+\.\d+$", version)
+    return re.match(r"\d+\.\d+\.\d+$", version)
 
 
 def do_replace_version_string(data, vers):
@@ -89,7 +89,7 @@ def updateversion(fname, major, minor, micro, new_version) -> None:
     vers = get_version(fname)
     #new_version = [x for x in vers.split('.')]
     new_version = list(vers.split('.'))
-    L = [int(x) for x in vers.split('.')] # integer version of vers
+    L = [int(x) for x in vers.split('.')]  # integer version of vers
 
     if major:
         n = int(L[0]) + 1
@@ -132,11 +132,11 @@ if __name__ == "__main__":
                         help='Increment micro version'
                         )
     parser.add_argument('--set-version',
-                    dest='new_version',
-                    default=None,
-                    help='Provide version of the form major.minor.micro',
-                    type=str
-                    )
+                        dest='new_version',
+                        default=None,
+                        help='Provide version of the form major.minor.micro',
+                        type=str
+                        )
 
     args = parser.parse_args()
     # If all arguments are false, set micro
@@ -144,6 +144,6 @@ if __name__ == "__main__":
         args.micro = True
 
     args = vars(args)  # args is a Namespace object, convert to dict
-    params = tuple(args.values()) # convert values to a tuple
+    params = tuple(args.values())  # convert values to a tuple
 
-    updateversion(*params) # * unpacks tuple
+    updateversion(*params)  # * unpacks tuple
