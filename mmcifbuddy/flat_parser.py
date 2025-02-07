@@ -4,14 +4,10 @@
 import sys
 import queue
 from pathlib import Path
-from loguru import logger
 from mmcifbuddy import mmciflexer as lex
+from .mylogger import logger
 from .states import StateName, State, BeginState, LoopState
 from .common import _handle_dataline
-
-logger.remove()
-logger.add(sys.stdout, colorize=True,
-           format="<green>{time:YYYY-MM-DD HH:mm}</green> <level>{message}</level>")
 
 
 def _handle_loop(parser) -> dict:
