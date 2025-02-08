@@ -7,6 +7,7 @@ CCSHARED := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_var
 LDFLAGS := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['LDFLAGS'])")
 LDSHARED := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['LDSHARED'])")
 EXT_SUFFIX := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['EXT_SUFFIX'])")
+
 MMCIFLEXERMODULE := _mmciflexer$(EXT_SUFFIX)
 LOCAL_INSTALL_DIR := ../mmcifbuddy/mmciflexer
 
@@ -19,8 +20,7 @@ install: all
 # Parhaps on mac? check! clang $(LDSHARED) $^ -o $@
 
 $(MMCIFLEXERMODULE): mmciflexermodule.o lex.mmcif.o sneaky_fopen.o
-	$(LDSHARED) -lz $^ -o $@
-####	$(CC) $(LDFLAGS) $^ -o $@
+	$(LDSHARED) $^ -lz -o $@
 
 mmciflexermodule.o: mmciflexermodule.c mmciflexer.h
 	python3 create_version_h.py

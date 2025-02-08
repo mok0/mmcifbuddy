@@ -6,8 +6,10 @@
 #include <zlib.h>
 
 /*
-  Use gzopen from zlib but masquerade as an ordinary
-  stdio *FiLE pointer structure.
+  Use gzopen from zlib but masquerade as an ordinary stdio *FiLE
+  pointer structure. We need to do this to make the lexer believe it
+  is reading from a descriptor from an ordinary fopen call, but here
+  we insert gzopen insted.
 */
 
 FILE *sneaky_fopen(const char *path, const char *mode)
@@ -16,13 +18,14 @@ FILE *sneaky_fopen(const char *path, const char *mode)
 
   /* try gzopen */
   zfp = gzopen(path, mode);
-  if (zfp == NULL) {
+  if (zfp == NULL) { /* failure to open any file */
     return NULL;
   }
 
-  /* Open file pointer, depending on implementation use
-     different functions for macOS or Linux
-   */
+  /*
+    Open file pointer, depending on implementation use different
+     functions for macOS or Linux.
+  */
 
 #ifdef __APPLE__
   /* funopen is only found on OpenBSD */

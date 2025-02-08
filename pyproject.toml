@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "mmcifbuddy"
 authors = [{name = "Morten Kjeldgaard", email = "mortenkjeldgaard@gmail.com"}]
 description = "Fast and easy to use Python module to parse mmCIF files"
-readme = "README.org"
+readme = "README.md"
 requires-python = ">=3.10"
 license = {file="LICENSE"}
 classifiers = [
