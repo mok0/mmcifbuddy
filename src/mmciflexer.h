@@ -2,4 +2,4 @@
 enum return_type {tEND_OF_FILE, tNAME, tLOOP, tLOOP_END, tID, tSEMICOLON,
                 tDOUBLE_QUOTE, tSINGLE_QUOTE, tDATA, tDATALINE_BEGIN,
                 tDATALINE, tDATALINE_END, tCOMMENT, tINT, tFLOAT,
-                tSAVE, tCATEGORY, tITEM};
+                tSAVE_CATEGORY, tSAVE_ITEM, tSAVE_END};

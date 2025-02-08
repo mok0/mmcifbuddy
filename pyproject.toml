@@ -13,12 +13,12 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: C",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "License :: OSI Approved :: European Union Public License 1.2",
     "Topic :: File Formats",
     "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator"
-]
+    ]
 dynamic = ["version"]
-dependencies = ["loguru"]
+dependencies = []
 
 [tool.setuptools]
 packages =  ["mmcifbuddy", "mmcifbuddy.mmciflexer"]

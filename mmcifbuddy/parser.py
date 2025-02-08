@@ -1,15 +1,13 @@
 #     Copyright (C) 2023 Morten Kjeldgaard
+# pylint: disable=too-many-instance-attributes, line-too-long,
+# pylint: disable=protected-access, no-member
 import sys
 import queue
 from pathlib import Path
-from loguru import logger
+from mmcifbuddy import mmciflexer as lex
+from .mylogger import logger
 from .states import StateName, State, BeginState, LoopState
 from .common import _handle_dataline
-from mmcifbuddy import mmciflexer as lex
-
-logger.remove()
-logger.add(sys.stdout, colorize=True,
-           format="<green>{time:YYYY-MM-DD HH:mm}</green> <level>{message}</level>")
 
 
 def _handle_loop(parser) -> dict:
@@ -246,6 +244,10 @@ class Parser:
 
                 case lex.tEND_OF_FILE:
                     break
+
+                case lex.tSAVE_CATEGORY | lex.tSAVE_ITEM | lex.tSAVE_END:
+                    logger.critical("Can't handle mmcif dictionaries")
+                    raise SystemExit
 
                 case _:
                     logger.warning(f"Not handling {lex.token_type_names[typ]}, state: {self.statename} ")

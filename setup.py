@@ -1,12 +1,15 @@
-import subprocess
 from setuptools import setup, Extension
 
-subprocess.run(["python3", "update_version.py"], cwd="./src")
-
 ext_module = Extension('mmcifbuddy.mmciflexer._mmciflexer',
-                    sources = ['src/mmciflexermodule.c', 'src/lex.mmcif.c'],
-                    include_dirs = ['src/'],
-                    language="c",
-                    libraries=[])
+                       sources = ['src/mmciflexermodule.c',
+                                  'src/lex.mmcif.c',
+                                  'src/sneaky_fopen.c'],
+                        depends = ['Makefile',
+                                   'src/Makefile',
+                                   'src/version.h',
+                                   'src/mmciflexer.h',
+                                   'src/mmcif.lex'],
+                       language="c",
+                       libraries=['z'])
 
 setup(ext_modules=[ext_module])
