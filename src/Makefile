@@ -1,5 +1,6 @@
 SHELL = /bin/sh
 
+DATE=$(shell date -u +'%Y-%m-%d_%H:%M_%Z')
 CC := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['CC'])")
 INCLUDEPY := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['INCLUDEPY'])")
 PY_CFLAGS := $(shell python3 -c "import sysconfig; print(sysconfig.get_config_vars()['PY_CFLAGS'])")
@@ -23,8 +24,8 @@ $(MMCIFLEXERMODULE): mmciflexermodule.o lex.mmcif.o sneaky_fopen.o
 	$(LDSHARED) $^ -lz -o $@
 
 mmciflexermodule.o: mmciflexermodule.c mmciflexer.h
-	python3 create_version_h.py
-	$(CC) -c $(PY_CFLAGS) $(CCSHARED) -I$(INCLUDEPY) $< -o $@
+
+	$(CC) -c $(PY_CFLAGS) $(CCSHARED) -I$(INCLUDEPY) -DCOMPILE_TIME=\"$(DATE)\" $< -o $@
 
 lex.mmcif.o: lex.mmcif.c
 	$(CC) -c $(PY_CFLAGS) $(CCSHARED) $< -o $@
