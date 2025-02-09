@@ -1,7 +1,8 @@
-#     Copyright (C) 2023 Morten Kjeldgaard
+# Copyright (C) 2023-2025 Morten Kjeldgaard
 # pylint: disable=too-many-instance-attributes, line-too-long,
 # pylint: disable=protected-access, no-member
-import sys
+# pylint: disable=logging-fstring-interpolation
+
 import queue
 from pathlib import Path
 from mmcifbuddy import mmciflexer as lex
@@ -19,6 +20,7 @@ def _handle_loop(parser) -> dict:
     Q = []
     loopdata = []
     typ, token = parser._get_token()
+
     while typ == lex.tNAME:
         category, item = token.split('.')
         Q.append((category, item))
@@ -70,7 +72,7 @@ class Parser:
      - fclose() -> None
        Method to close a file opened by fopen().
 
-     - get_datablock_names(self) -> list
+     - get_datablock_names() -> list
        This method returns a list of datablock names encountered during
        the parsing of the file.
 
@@ -81,7 +83,7 @@ class Parser:
        This is the main parsing routine of the class, doing the actual
        work. It returns a dictionary of datablocks which again
        consists of dictionaries of categories. For a flat parser,
-       use flat_parser instead.
+       use parser_flat instead.
     """
 
     def __init__(self, verbose=True) -> None:
@@ -109,7 +111,6 @@ class Parser:
         self.opened = False
         self.typ = None
         self.token = None
-        self.data_blocks = {}
         self.current_dict = None
 
     def _set_state(self, statename: StateName, state: State) -> None:
@@ -118,9 +119,7 @@ class Parser:
         self.statename = statename
 
     def fopen(self, fname) -> None:
-        """Open named file in C extension. Only takes
-        uncompressed text files as input.
-        """
+        """Open named file in C extension. File can be gzipped or not"""
         self.fname = fname
 
         # Check if file exists and can be opened without errors,
@@ -143,7 +142,7 @@ class Parser:
         self.fp = fp
 
         if not hasattr(fp, 'fileno'):
-            logger.error("Expecting Python file object")
+            logger.error("Expecting open Python file object")
             raise TypeError()
 
         if fp.closed:
@@ -251,6 +250,7 @@ class Parser:
 
                 case _:
                     logger.warning(f"Not handling {lex.token_type_names[typ]}, state: {self.statename} ")
+
         if self.verbose:
             logger.info(f"Done parsing {self.get_datablock_names()}")
         return self.data_blocks

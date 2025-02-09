@@ -1,7 +1,8 @@
-#     Copyright (C) 2023 Morten Kjeldgaard
+# Copyright (C) 2023-2025 Morten Kjeldgaard
 # pylint: disable=too-many-instance-attributes, line-too-long,
 # pylint: disable=protected-access, no-member
-import sys
+# pylint: disable=logging-fstring-interpolation
+
 import queue
 from pathlib import Path
 from mmcifbuddy import mmciflexer as lex
@@ -65,8 +66,8 @@ class Parser:
        file will be opened for reading in the module, and may
        be both plain and gzipped format.
 
-      - fclose() -> None
-       Method to close a file opened by .fopen().
+     - fclose() -> None
+       Method to close a file opened by fopen().
 
      - get_datablock_names() -> list
        This method returns a list of datablock names encountered during
@@ -79,8 +80,9 @@ class Parser:
        This is the main parsing routine of the class, doing the actual
        work. It returns a dictionary of datablocks which again
        consists of dictionaries of categories. For a flat parser,
-       use flat_parser instead.
+       use parser_flat instead.
     """
+
     def __init__(self, verbose=True) -> None:
         self.verbose = verbose
         self.begin_state = BeginState(self)
@@ -106,7 +108,6 @@ class Parser:
         self.opened = False
         self.typ = None
         self.token = None
-        self.data_blocks = {}
         self.current_dict = None
 
     def _set_state(self, statename: StateName, state: State) -> None:
@@ -134,11 +135,11 @@ class Parser:
         self.opened = True
 
     def open(self, fp) -> None:
-        """Define file already opened in Python."""
+        """Define file already opened in Python"""
         self.fp = fp
 
         if not hasattr(fp, 'fileno'):
-            logger.error("Expecting open file object")
+            logger.error("Expecting open Python file object")
             raise TypeError()
 
         if fp.closed:
@@ -161,7 +162,7 @@ class Parser:
         """Set the internal debug mode in the lexer"""
         return lex.set_debug_mode(value)
 
-    def _get_token(self) -> tuple[str,str]:
+    def _get_token(self) -> tuple[str, str]:
         """Internal method to get next token from lexer"""
         if self.unget.empty():
             self.typ, self.token = lex.get_token()
@@ -231,7 +232,6 @@ class Parser:
                     pass
 
                 case lex.tEND_OF_FILE:
-                    #self.fclose()
                     break
 
                 case lex.tSAVE_CATEGORY | lex.tSAVE_ITEM | lex.tSAVE_END:
