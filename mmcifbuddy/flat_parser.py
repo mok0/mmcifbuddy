@@ -5,7 +5,7 @@ import sys
 import queue
 from pathlib import Path
 from mmcifbuddy import mmciflexer as lex
-from .mylogger import logger
+from .logger import logger
 from .states import StateName, State, BeginState, LoopState
 from .common import _handle_dataline
 
