@@ -7,8 +7,11 @@ mmciflexermodule.so:
 	cd src && $(MAKE) install
 
 .PHONY: wheel mmciflexermodule.so
-wheel: clean-build-env
+wheel: clean-build-env README.md
 	python3 -m build --wheel
+
+README.md: README.org
+	pandoc -f org -t gfm $< -o $@
 
 .PHONY: clean
 clean:
