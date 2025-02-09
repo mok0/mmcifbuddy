@@ -1,24 +1,20 @@
 #! /usr/bin/env python3
+## This script generates a version.h file for the mmciflexermodule
 
-# This script generates a version.h file for the mmciflexermodule
-
-import sys
 import subprocess
 from pathlib import Path
-from loguru import logger
+import mmcifbuddy
+from mmcifbuddy.logger import logger
 
-logger.remove()
-logger.add(sys.stdout, colorize=True,
-           format="<green>{time:YYYY-MM-DD HH:mm}</green> <level>{message}</level>")
 
-def create_version() -> None:
+def write_version_h() -> None:
 
-    source = Path.cwd() / "mmciflexermodule.c"
+    source = Path.cwd() / "src/mmciflexermodule.c"
     if not source.exists():
         logger.error("mmciflexermodule.c not found where expected")
         raise SystemExit
 
-    p = Path.cwd()  / "version.h"
+    p = Path.cwd()  / "src/version.h"
     outf = p.open('w')
 
     try:
@@ -37,17 +33,14 @@ def create_version() -> None:
     except subprocess.CalledProcessError:
         print("#define GIT_BRANCH \"None\"", file=outf)
 
-
-    compile_time = subprocess.run(['date', '-u', "+'%Y-%m-%d %H:%M:%S UTC'"],
-                                capture_output=True, text=True, check=True)
-    compile_time = compile_time.stdout.strip().replace("'", '')
-    print(f"#define COMPILE_TIME \"{compile_time}\"", file=outf)
+    # Get the version number from the mmcifbuddy module
+    version = mmcifbuddy.__version__
+    if version:
+        print(f"#define VERSION \"{version}\"", file=outf)
 
     outf.close()
-
-    logger.info(f"Wrote new file {p}")
 
 
 if __name__ == "__main__":
 
-    create_version()
+    write_version_h()
