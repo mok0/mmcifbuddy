@@ -1,9 +1,11 @@
-#     Copyright (C) 2023 Morten Kjeldgaard
+#     Copyright (C) 2023-2025 Morten Kjeldgaard
+# pylint: disable=logging-fstring-interpolation
 
 from . import mmciflexer
+from .logger import logger
 
-# Class that wraps mmciflexer in a file-like object,
-# that is also context aware
+## Class that wraps mmciflexer in a file-like object, that is also
+## context aware
 
 class FileReader:
     def __init__(self, file):
@@ -12,15 +14,14 @@ class FileReader:
         self.closed = True
 
     def __enter__(self):
-        print(f'Opening the file {self.file}.')
+        logger.info(f'Opening the file {self.file}.')
         mmciflexer.fopen(self.file)
         self.closed = False
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
-        print(f'Closing the file {self.file}.')
+        logger.info(f'Closing the file {self.file}.')
         if not self.closed:
-            pass
             status = mmciflexer.fclose()
         return False
 
@@ -40,5 +41,4 @@ class FileReader:
         return token
 
     def close(self):
-        return mmciflexer.close_file()
-
+        return mmciflexer.fclose()
