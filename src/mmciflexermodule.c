@@ -156,8 +156,6 @@ static PyObject *lexer_set_debug_mode(PyObject *self, PyObject *args)
 }
 
 
-
-
 /*
   The PyMethodDef struct holds information about the methods in the
   module, this is the interface of the above functions with Python.
@@ -165,8 +163,8 @@ static PyObject *lexer_set_debug_mode(PyObject *self, PyObject *args)
 static PyMethodDef MMCIFMethods[]=
   {
     {"fopen", lexer_open_with_filename, METH_VARARGS, "Open mmCIF file for reading"},
-    {"open", lexer_open_with_fd, METH_VARARGS, "Pass open Python file for reading"},
-    {"set_debug_mode", lexer_set_debug_mode, METH_VARARGS, "Pass open Python file for reading"},
+    {"open", lexer_open_with_fd, METH_VARARGS, "Pass an open Python file descriptor for reading to module"},
+    {"set_debug_mode", lexer_set_debug_mode, METH_VARARGS, "Set debug mode on (1) or off (0)"},
     {"fclose", (PyCFunction)lexer_close_file, METH_NOARGS, "Close mmCIF file"},
     {"get_token", (PyCFunction)lexer_get_token, METH_NOARGS, "Get next token from mmCIF file"},
     {NULL, NULL, 0, NULL}  /* Sentinel */
@@ -225,6 +223,9 @@ PyMODINIT_FUNC PyInit__mmciflexer()
 #endif
 #ifdef COMPILE_TIME
   PyModule_AddObjectRef(module, "COMPILE_TIME", PyUnicode_FromString(COMPILE_TIME));
+#endif
+#ifdef VERSION
+  PyModule_AddObjectRef(module, "VERSION", PyUnicode_FromString(VERSION));
 #endif
 
   /* Add a list of token type names */
