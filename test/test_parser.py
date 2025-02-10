@@ -11,7 +11,7 @@ def get_dict():
     fnam = Path(cwd, "4af1.cif")
     myparser.fopen(fnam)
     _ = myparser.parse()
-    thedata.update(myparser.current_dict)
+    thedata.update(myparser.get_dict())
     myparser.fclose()
     yield thedata
 
