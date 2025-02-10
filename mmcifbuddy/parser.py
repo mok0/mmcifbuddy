@@ -111,7 +111,6 @@ class Parser:
         self.opened = False
         self.typ = None
         self.token = None
-        self.current_dict = None
 
     def _set_state(self, statename: StateName, state: State) -> None:
         """Set internal parser state"""
