@@ -71,9 +71,11 @@ def test_entity_name_com():
 
 def test_entity_poly():
     assert "polypeptide(L)" == thedata['_entity_poly']['type']
-    assert 5 == len(thedata['_entity_poly']['pdbx_seq_one_letter_code'])
-    assert 5 == len(thedata['_entity_poly']['pdbx_seq_one_letter_code_can'])
+    assert 6 == len(thedata['_entity_poly']['pdbx_seq_one_letter_code'])
+    assert 6 == len(thedata['_entity_poly']['pdbx_seq_one_letter_code_can'])
     assert "A" == thedata['_entity_poly']['pdbx_strand_id']
+    seq = ''.join(thedata['_entity_poly']['pdbx_seq_one_letter_code'])
+    assert 416 == len(seq)
 
 def test_entity_poly_seq():
     assert 416 == len(thedata['_entity_poly_seq']['mon_id'])

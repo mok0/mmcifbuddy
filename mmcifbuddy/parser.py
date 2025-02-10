@@ -40,7 +40,7 @@ def _handle_loop(parser) -> dict:
             col = 0
         typ, token = parser._get_token()
         if typ == lex.tDATALINE_BEGIN:
-            thelist = _handle_dataline(parser)
+            thelist = _handle_dataline(parser, token)
             loopdata[col].append(thelist)
 
     for i, tok in enumerate(Q):
@@ -176,6 +176,10 @@ class Parser:
         """Return list of datablock names found in file"""
         return list(self.data_blocks.keys())
 
+    def get_dict(self) -> dict:
+        """Return the current (last) dictionary entry"""
+        return self.current_dict
+
     def reset(self) -> None:
         """Reset class to initial state, this is relevant if the
         open() method of the parser is used, and the parser is needed
@@ -220,10 +224,10 @@ class Parser:
                             self.current_dict[category] = {}
                         self.current_dict[category][item] = token
                     else:
-                        _handle_dataline(self)
+                        _handle_dataline(self, token)
 
                 case lex.tDATALINE_BEGIN:
-                    data = _handle_dataline(self)
+                    data = _handle_dataline(self, token)
 
                     if self.statename != StateName.sLOOP:
                         category, item = self.queue.get()
