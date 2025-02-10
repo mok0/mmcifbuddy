@@ -1,5 +1,5 @@
 import pytest
-
+from pathlib import Path
 from mmcifbuddy.parser import Parser
 
 thedata = {}
@@ -7,7 +7,9 @@ thedata = {}
 @pytest.fixture(autouse=True, scope="session")
 def get_dict():
     myparser = Parser()
-    myparser.fopen("4af1.cif.gz")
+    cwd = Path(__file__).parent
+    fnam = Path(cwd, "4af1.cif")
+    myparser.fopen(fnam)
     _ = myparser.parse()
     thedata.update(myparser.current_dict)
     myparser.fclose()
