@@ -13,9 +13,12 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: C",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: European Union Public License 1.2",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
     "Topic :: File Formats",
-    "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator"
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Software Development :: Libraries :: Python Modules",
     ]
 dynamic = ["version"]
 dependencies = []
@@ -25,3 +28,10 @@ packages =  ["mmcifbuddy", "mmcifbuddy.mmciflexer"]
 
 [tool.setuptools.dynamic]
 version = {attr = "mmcifbuddy.__version__"}
+
+[tool.pytest.ini_options]
+#addopts = "-ra -q"
+addopts = "-v -s"
+testpaths = [
+    "test",
+]
