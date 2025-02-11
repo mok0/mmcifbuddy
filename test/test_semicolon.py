@@ -6,7 +6,7 @@ thedata = {}
 
 @pytest.fixture(autouse=True, scope="session")
 def get_dict():
-    myparser = Parser()
+    myparser = Parser(verbose=False)
     cwd = Path(__file__).parent
     fnam = Path(cwd, "semicolon.cif")
     myparser.fopen(fnam)

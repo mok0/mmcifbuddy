@@ -1,0 +1,19 @@
+data_TEST
+#
+_entry.id   TEST
+_semicolon.test
+;Line 1/6
+Line 2/6
+Line 3/6
+Line 4/6
+Line 5/6
+Line 6/6
+;
+#
+_exptl_crystal.description
+;Author collected the first dataset in the dark, then a second dataset was
+collected on the same crystal after inducing a photostationary state with
+continuous illumination. The structure was refined by the application of
+difference refinement to both datasets.
+;
+#
