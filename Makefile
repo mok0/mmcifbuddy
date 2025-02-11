@@ -1,6 +1,6 @@
 SHELL=/bin/sh
 
-all: wheel
+all: mmciflexermodule.so wheel
 
 PHONY: mmciflexermodule.so
 mmciflexermodule.so:
@@ -8,7 +8,7 @@ mmciflexermodule.so:
 
 .PHONY: wheel mmciflexermodule.so
 wheel: clean-build-env README.md
-	python3 -m build --wheel
+	python3 -m build
 
 README.md: README.org
 	pandoc -f org -t gfm $< -o $@

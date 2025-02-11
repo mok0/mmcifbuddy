@@ -13,7 +13,7 @@ MMCIFLEXERMODULE := _mmciflexer$(EXT_SUFFIX)
 LOCAL_INSTALL_DIR := ../mmcifbuddy/mmciflexer
 
 .PHONY: all
-all: $(MMCIFLEXERMODULE) test_mmcif_lex
+all: $(MMCIFLEXERMODULE)
 
 install: all
 	install $(MMCIFLEXERMODULE) $(LOCAL_INSTALL_DIR)
@@ -36,7 +36,7 @@ sneaky_fopen.o: sneaky_fopen.c
 lex.mmcif.c: mmcif.lex mmciflexer.h
 	$(LEX) mmcif.lex
 
-test_mmcif_lex: test_mmcif_lex.o lex.mmcif.c
+test_mmcif_lex: test_mmcif_lex.c lex.mmcif.c
 	$(CC) $^ -o $@
 
 .PHONY: clean

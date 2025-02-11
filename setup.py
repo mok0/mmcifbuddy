@@ -9,7 +9,12 @@ ext_module = Extension('mmcifbuddy.mmciflexer._mmciflexer',
                                    'src/Makefile',
                                    'src/version.h',
                                    'src/mmciflexer.h',
-                                   'src/mmcif.lex'],
+                                   'src/mmcif.lex',
+                                   'test/4af1.cif',
+                                   'test/semicolon.cif',
+                                   'test/chem_comp.cif',
+                                   'test/two_datablocks.cif',
+                                   ],
                        language="c",
                        libraries=['z'])
 

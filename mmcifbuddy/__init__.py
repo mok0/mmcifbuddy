@@ -2,7 +2,7 @@ from . import mmciflexer as lex
 from .parser import Parser
 from .parser_flat import ParserFlat
 
-__version__ = "0.6.1"
+__version__ = "0.6.2"
 
 def print_version() -> None:
     print("--- mmcifbuddy ---")
