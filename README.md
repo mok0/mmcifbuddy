@@ -911,7 +911,15 @@ able to read data from mmcif files in text format as well as gzip
 compressed.
 
 First, you need to make sure the Python modules `setuptools` and `build`
-are available on your computer [^4].
+are available on your computer [^4]. You also need to install a C
+compiler, the Python development library and Python virtual environment
+modules, that are required for building the Python package. For a Debian
+familiy system:
+
+``` shell
+sudo apt install python3-setuptools python3-build
+sudo apt install build-essential libpython3-dev python3-venv
+```
 
 To build the package, run `make` in the parent directory:
 

@@ -751,7 +751,12 @@ The lexer is written in C and lex. The lex code is found in the file =src/mmcif.
 
 The job of the lexer is to break down the stream of lines from the mmcif file into tokens that can be interpreted by the parser. The lexer is able to read data from mmcif files in text format as well as gzip compressed.
 
-First, you need to make sure the Python modules =setuptools= and =build= are available on your computer [fn:build-tools].
+First, you need to make sure the Python modules =setuptools= and =build= are available on your computer [fn:build-tools]. You also need to install a C compiler, the Python development library and Python virtual environment modules, that are required for building the Python package. For a Debian familiy system:
+
+#+begin_src shell
+sudo apt install python3-setuptools python3-build
+sudo apt install build-essential libpython3-dev python3-venv
+#+end_src
 
 To build the package, run =make= in the parent directory:
 
