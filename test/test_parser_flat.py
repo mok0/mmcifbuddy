@@ -1,12 +1,12 @@
 import pytest
 from pathlib import Path
-from mmcifbuddy.parser_flat import Parser
+from mmcifbuddy import ParserFlat
 
 thedata = {}
 
 @pytest.fixture(autouse=True, scope="session")
 def get_dict():
-    myparser = Parser(verbose=False)
+    myparser = ParserFlat(verbose=False)
     cwd = Path(__file__).parent
     fnam = Path(cwd, "4af1.cif")
     myparser.fopen(fnam)

@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-from mmcifbuddy.parser import Parser
+from mmcifbuddy import Parser
 
 thedata = {}
 
