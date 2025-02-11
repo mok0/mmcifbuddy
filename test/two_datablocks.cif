@@ -1,0 +1,36 @@
+#
+# --- Lines beginning with # are treated as comments 
+#
+data_X987A
+_entry.id                              X987A
+
+_exptl_crystal.id                  'Crystal A'
+_exptl_crystal.colour              'pale yellow'
+_exptl_crystal.density_diffrn      1.113
+_exptl_crystal.density_Matthews    1.01 
+
+_cell.entry_id                         X987A
+_cell.length_a                         95.39
+_cell.length_a_esd                      0.05
+_cell.length_b                         48.80
+_cell.length_b_esd                      0.12
+_cell.length_c                         56.27
+_cell.length_c_esd                      0.06
+
+# Second data block
+data_T100A
+
+_entry.id                           T100A
+
+_exptl_crystal.id                  'Crystal B'
+_exptl_crystal.colour              'orange'
+_exptl_crystal.density_diffrn      1.156
+_exptl_crystal.density_Matthews    1.06
+
+_cell.entry_id                         T100A
+_cell.length_a                         68.39
+_cell.length_a_esd                      0.05
+_cell.length_b                         88.70
+_cell.length_b_esd                      0.12
+_cell.length_c                         76.27
+_cell.length_c_esd                      0.06
