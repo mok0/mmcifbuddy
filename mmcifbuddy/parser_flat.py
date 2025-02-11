@@ -50,7 +50,7 @@ def _handle_loop(parser) -> dict:
     return D
 
 
-class Parser:
+class ParserFlat:
     """
     Parser class to handle the parsing of a file in mmCIF format.
     The class has the following public facing methods:

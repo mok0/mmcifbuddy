@@ -1,4 +1,6 @@
 from . import mmciflexer as lex
+from .parser import Parser
+from .parser_flat import ParserFlat
 
 __version__ = "0.5.4"
 
