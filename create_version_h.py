@@ -21,6 +21,7 @@ def write_version_h() -> None:
         git_commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"],
                                     capture_output=True, text=True, check=True)
         git_commit = git_commit.stdout.strip()
+        print("/* id of parent commit */", file=outf)
         print(f"#define GIT_COMMIT \"{git_commit}\"", file=outf)
     except subprocess.CalledProcessError:
         print("#define GIT_COMMIT \"None\"", file=outf)

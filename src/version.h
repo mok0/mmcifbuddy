@@ -1,3 +1,4 @@
-#define GIT_COMMIT "d54e54a"
+/* id of parent commit */
+#define GIT_COMMIT "f7fe528"
 #define GIT_BRANCH "master"
-#define VERSION "0.5.4"
+#define VERSION "0.6.0"
